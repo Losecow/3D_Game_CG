@@ -26,6 +26,8 @@ export class Game {
     this._dangerTimer = 0;
     this._dangerThreshold = 2500; // 2.5초 이상 초과 시 게임 오버
 
+    this._raycaster = new THREE.Raycaster();
+
     this._initRenderer();
     this._initScene();
     this._initPhysics();
@@ -197,12 +199,12 @@ export class Game {
     }
 
     // 가이드라인 위치 업데이트 / Update guide position
-    const dropHeight = this._gameContainer.height + 2;
-    this._dropGuide.position.set(pos.x, dropHeight / 2, pos.z);
+    const spawnY = this._gameContainer.height + 1.5;
+    this._dropGuide.position.set(pos.x, spawnY / 2, pos.z);
     this._dropGuide.visible = true;
 
-    // 미리보기 구체 위치 업데이트 / Update preview sphere
-    this._previewSphere.position.set(pos.x, dropHeight + 1, pos.z);
+    // 미리보기 구체: 실제 스폰 위치와 동일하게 / Preview sphere at exact spawn position
+    this._previewSphere.position.set(pos.x, spawnY, pos.z);
     this._previewSphere.visible = true;
   }
 
@@ -233,16 +235,14 @@ export class Game {
       -(event.clientY / window.innerHeight) * 2 + 1
     );
 
-    const raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(mouse, this._camera);
+    this._raycaster.setFromCamera(mouse, this._camera);
 
-    // 컨테이너 상단보다 높은 수평 평면과 교차 / Intersect horizontal plane above container
     const dropPlaneY = this._gameContainer.height + 2;
     const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -dropPlaneY);
     const target = new THREE.Vector3();
-    raycaster.ray.intersectPlane(plane, target);
+    const hit = this._raycaster.ray.intersectPlane(plane, target);
 
-    if (!target) return null;
+    if (!hit) return null;
 
     // 컨테이너 XZ 경계 내로 클램핑 / Clamp within container XZ bounds
     const hw = this._gameContainer.width / 2 - 0.5;
