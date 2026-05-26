@@ -1,0 +1,151 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #1a1a2e;
+  overflow: hidden;
+  font-family: 'Segoe UI', sans-serif;
+  color: #fff;
+}
+
+/* Three.js 캔버스 컨테이너 / Canvas container */
+#canvas-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+#canvas-container canvas {
+  display: block;
+}
+
+/* UI 오버레이 / UI overlay */
+#ui {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+#score-panel,
+#next-panel {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 14px 20px;
+  text-align: center;
+  min-width: 120px;
+}
+
+.score-label {
+  font-size: 0.65rem;
+  color: #aaa;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+#score,
+#best-score {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+#best-score {
+  color: #ffd700;
+  margin-bottom: 0;
+}
+
+#next-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+#next-fruit-preview {
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* 게임 오버 화면 / Game over screen */
+#game-over {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+#game-over.hidden {
+  display: none;
+}
+
+#game-over-box {
+  background: #16213e;
+  border: 2px solid rgba(255, 100, 100, 0.6);
+  border-radius: 20px;
+  padding: 40px 60px;
+  text-align: center;
+}
+
+#game-over-box h2 {
+  font-size: 2.5rem;
+  color: #ff6464;
+  margin-bottom: 16px;
+  letter-spacing: 0.1em;
+}
+
+#game-over-box p {
+  font-size: 1.2rem;
+  color: #ccc;
+  margin-bottom: 24px;
+}
+
+#game-over-box span {
+  color: #fff;
+  font-weight: 700;
+}
+
+#restart-btn {
+  background: #ff6464;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 12px 32px;
+  font-size: 1rem;
+  cursor: pointer;
+  pointer-events: all;
+  transition: background 0.2s;
+}
+
+#restart-btn:hover {
+  background: #ff4040;
+}
+
+/* 조작 안내 / Controls hint */
+#controls-hint {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  line-height: 1.6;
+  pointer-events: none;
+  z-index: 10;
+}

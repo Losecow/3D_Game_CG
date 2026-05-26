@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D 수박게임</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <!-- Three.js 캔버스가 여기 마운트됨 / Three.js canvas mounts here -->
+    <div id="canvas-container"></div>
+
+    <!-- UI 오버레이 / UI overlay -->
+    <div id="ui">
+      <div id="score-panel">
+        <div class="score-label">점수 / SCORE</div>
+        <div id="score">0</div>
+        <div class="score-label">최고 점수 / BEST</div>
+        <div id="best-score">0</div>
+      </div>
+
+      <div id="next-panel">
+        <div class="score-label">다음 / NEXT</div>
+        <canvas id="next-fruit-preview" width="80" height="80"></canvas>
+      </div>
+    </div>
+
+    <!-- 게임 오버 화면 / Game over screen -->
+    <div id="game-over" class="hidden">
+      <div id="game-over-box">
+        <h2>GAME OVER</h2>
+        <p>점수 / Score: <span id="final-score">0</span></p>
+        <button id="restart-btn">다시 시작 / Restart</button>
+      </div>
+    </div>
+
+    <!-- 조작 안내 / Controls guide -->
+    <div id="controls-hint">
+      클릭: 과일 드롭 | 드래그: 카메라 회전 | 스크롤: 줌<br/>
+      Click: Drop | Drag: Rotate | Scroll: Zoom
+    </div>
+
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
