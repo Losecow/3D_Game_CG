@@ -182,7 +182,6 @@ export class Game {
     // 마우스 클릭: 과일 드롭 / Mouse click: drop fruit
     window.addEventListener('click', (e) => this._onMouseClick(e));
 
-    // 창 크기 변경 / Window resize
     window.addEventListener('resize', () => this._onResize());
   }
 
@@ -337,9 +336,9 @@ export class Game {
 
   /** 게임 재시작 / Restart the game */
   _restart() {
-    // 모든 과일 제거 / Remove all fruits
     [...this._fruits].forEach((f) => f.destroy());
     this._fruits = [];
+    this._merger.clearPending();
 
     this._score = 0;
     this._isGameOver = false;

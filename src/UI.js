@@ -6,17 +6,19 @@ import { FRUIT_DATA } from './FruitData.js';
  */
 export class UI {
   constructor() {
-    this._scoreEl     = document.getElementById('score');
-    this._bestEl      = document.getElementById('best-score');
-    this._finalEl     = document.getElementById('final-score');
-    this._gameOverEl  = document.getElementById('game-over');
-    this._restartBtn  = document.getElementById('restart-btn');
+    this._scoreEl       = document.getElementById('score');
+    this._bestEl        = document.getElementById('best-score');
+    this._finalEl       = document.getElementById('final-score');
+    this._finalBestEl   = document.getElementById('final-best');
+    this._newRecordEl   = document.getElementById('new-record');
+    this._gameOverEl    = document.getElementById('game-over');
+    this._restartBtn    = document.getElementById('restart-btn');
     this._previewCanvas = document.getElementById('next-fruit-preview');
-    this._previewCtx  = this._previewCanvas.getContext('2d');
+    this._previewCtx    = this._previewCanvas.getContext('2d');
 
-    // localStorage에서 최고 점수 불러오기 / Load best score from localStorage
     this._best = parseInt(localStorage.getItem('suika3d_best') || '0', 10);
     this._bestEl.textContent = this._best;
+    this._newBestThisGame = false;
   }
 
   /**
@@ -30,6 +32,7 @@ export class UI {
       this._best = score;
       this._bestEl.textContent = score;
       localStorage.setItem('suika3d_best', score);
+      this._newBestThisGame = true;
     }
   }
 
@@ -70,14 +73,16 @@ export class UI {
    */
   showGameOver(score, onRestart) {
     this._finalEl.textContent = score;
+    this._finalBestEl.textContent = this._best;
+    this._newRecordEl.classList.toggle('hidden', !this._newBestThisGame);
     this._gameOverEl.classList.remove('hidden');
 
-    // 이전 리스너 제거 후 새로 등록 / Remove old listener, add new one
     const newBtn = this._restartBtn.cloneNode(true);
     this._restartBtn.replaceWith(newBtn);
     this._restartBtn = newBtn;
     this._restartBtn.addEventListener('click', () => {
       this._gameOverEl.classList.add('hidden');
+      this._newBestThisGame = false;
       onRestart();
     });
   }

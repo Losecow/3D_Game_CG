@@ -109,6 +109,18 @@ body {
   letter-spacing: 0.1em;
 }
 
+#new-record {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffd700;
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+#new-record.hidden {
+  display: none;
+}
+
 #game-over-box p {
   font-size: 1.2rem;
   color: #ccc;

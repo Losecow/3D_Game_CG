@@ -107,4 +107,8 @@ export class Merger {
     this._pendingMerges = [];
     return newFruits;
   }
+
+  clearPending() {
+    this._pendingMerges = [];
+  }
 }
