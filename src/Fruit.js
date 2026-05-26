@@ -23,10 +23,11 @@ export class Fruit {
     this.scene = scene;
     this.physicsWorld = physicsWorld;
 
-    // 합체 처리 중인지 여부 (중복 합체 방지) / Merging flag to prevent duplicate merges
     this.isMerging = false;
-    // 드롭 직후 잠깐 충돌 무시를 위한 타임스탬프 / Timestamp to ignore collision right after drop
     this.spawnTime = performance.now();
+
+    this._birthAnim = false;
+    this._birthStart = 0;
 
     this._buildMesh(position);
     this._buildBody(position, fruitMaterial);
@@ -113,13 +114,29 @@ export class Fruit {
     this.physicsWorld.addBody(this.body);
   }
 
-  /**
-   * 물리 바디 위치를 Three.js 메시에 동기화
-   * Sync physics body position/rotation to Three.js mesh
-   */
+  /** 합체로 생성된 과일에 팝인 애니메이션 시작 */
+  playBirthAnim() {
+    this._birthAnim = true;
+    this._birthStart = performance.now();
+    this.mesh.scale.setScalar(0);
+  }
+
   sync() {
     this.mesh.position.copy(this.body.position);
     this.mesh.quaternion.copy(this.body.quaternion);
+    if (this._birthAnim) this._tickBirthAnim();
+  }
+
+  _tickBirthAnim() {
+    const t = Math.min((performance.now() - this._birthStart) / 400, 1);
+    // ease-out-back: 0 → 1.15 → 1.0
+    const c1 = 2.0, c3 = c1 + 1;
+    const scale = 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+    this.mesh.scale.setScalar(Math.max(0, scale));
+    if (t >= 1) {
+      this._birthAnim = false;
+      this.mesh.scale.setScalar(1);
+    }
   }
 
   /**

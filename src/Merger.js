@@ -99,6 +99,7 @@ export class Merger {
         this.fruitMaterial
       );
 
+      nextFruit.playBirthAnim();
       fruits.push(nextFruit);
       newFruits.push(nextFruit);
     }
