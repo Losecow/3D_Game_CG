@@ -313,8 +313,9 @@ export class Game {
    */
   _checkGameOver(dt) {
     const dangerY = this._gameContainer.dangerLineY;
+    const now = performance.now();
     const hasAbove = this._fruits.some(
-      (f) => !f.isMerging && f.body.position.y > dangerY
+      (f) => !f.isMerging && f.body.position.y > dangerY && (now - f.spawnTime) > 1500
     );
 
     if (hasAbove) {
