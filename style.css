@@ -161,3 +161,40 @@ body {
   pointer-events: none;
   z-index: 10;
 }
+
+/* 반응형 / Responsive */
+@media (max-width: 480px) {
+  #ui {
+    top: 10px;
+    right: 10px;
+    gap: 8px;
+  }
+
+  #score-panel,
+  #next-panel {
+    padding: 10px 14px;
+    min-width: 90px;
+  }
+
+  #score,
+  #best-score {
+    font-size: 1.4rem;
+  }
+
+  #next-fruit-preview {
+    width: 60px;
+    height: 60px;
+  }
+
+  #game-over-box {
+    padding: 28px 36px;
+  }
+
+  #game-over-box h2 {
+    font-size: 1.8rem;
+  }
+
+  #controls-hint {
+    display: none;
+  }
+}

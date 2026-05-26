@@ -7,6 +7,7 @@ import { Fruit } from './Fruit.js';
 import { Merger } from './Merger.js';
 import { UI } from './UI.js';
 import { FRUIT_DATA, MAX_DROP_LEVEL } from './FruitData.js';
+import { Sound } from './Sound.js';
 
 /**
  * 메인 게임 클래스 - 씬, 루프, 상태 관리를 총괄
@@ -27,6 +28,7 @@ export class Game {
     this._dangerThreshold = 2500; // 2.5초 이상 초과 시 게임 오버
 
     this._raycaster = new THREE.Raycaster();
+    this._sound = new Sound();
 
     this._initRenderer();
     this._initScene();
@@ -165,7 +167,8 @@ export class Game {
       this._scene,
       this._physicsWorld,
       this._world.fruitMaterial,
-      (score) => this._addScore(score)
+      (score) => this._addScore(score),
+      this._sound
     );
   }
 
@@ -176,13 +179,19 @@ export class Game {
 
   /** 이벤트 리스너 등록 / Register event listeners */
   _initEvents() {
-    // 마우스 이동: 드롭 가이드 위치 업데이트 / Mouse move: update drop guide
     window.addEventListener('mousemove', (e) => this._onMouseMove(e));
+    window.addEventListener('click',     (e) => this._onMouseClick(e));
+    window.addEventListener('resize',    ()  => this._onResize());
 
-    // 마우스 클릭: 과일 드롭 / Mouse click: drop fruit
-    window.addEventListener('click', (e) => this._onMouseClick(e));
-
-    window.addEventListener('resize', () => this._onResize());
+    // 터치 지원 / Touch support
+    window.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      this._onMouseMove(e.touches[0]);
+    }, { passive: false });
+    window.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      this._onMouseClick(e.changedTouches[0]);
+    }, { passive: false });
   }
 
   // ─────────────────────────────── 이벤트 핸들러 ───────────────────────────────
@@ -197,14 +206,15 @@ export class Game {
       return;
     }
 
-    // 가이드라인 위치 업데이트 / Update guide position
     const spawnY = this._gameContainer.height + 1.5;
     this._dropGuide.position.set(pos.x, spawnY / 2, pos.z);
     this._dropGuide.visible = true;
 
-    // 미리보기 구체: 실제 스폰 위치와 동일하게 / Preview sphere at exact spawn position
     this._previewSphere.position.set(pos.x, spawnY, pos.z);
     this._previewSphere.visible = true;
+
+    // 쿨다운 중 커서 변경 / Cursor feedback during cooldown
+    this._renderer.domElement.style.cursor = this._dropCooldown ? 'not-allowed' : 'crosshair';
   }
 
   _onMouseClick(event) {
@@ -274,6 +284,7 @@ export class Game {
 
     this._fruits.push(fruit);
     this._merger.watchFruit(fruit);
+    this._sound.playDrop();
 
     // 다음 과일 준비 / Prepare next fruit
     this._nextLevel = this._randomLevel();

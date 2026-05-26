@@ -3,6 +3,7 @@ import * as CANNON from 'cannon-es';
 import { FRUIT_DATA } from './FruitData.js';
 
 let _fruitIdCounter = 0;
+const _geoCache = new Map(); // 레벨별 지오메트리 공유 / Shared geometry per level
 
 /**
  * 과일 하나를 나타내는 클래스 (Three.js Mesh + cannon-es Body 결합)
@@ -40,7 +41,10 @@ export class Fruit {
   _buildMesh(position) {
     const { radius, color, name } = this.data;
 
-    const geo = new THREE.SphereGeometry(radius, 24, 16);
+    if (!_geoCache.has(this.level)) {
+      _geoCache.set(this.level, new THREE.SphereGeometry(radius, 24, 16));
+    }
+    const geo = _geoCache.get(this.level);
     const mat = new THREE.MeshStandardMaterial({
       color: new THREE.Color(color),
       roughness: 0.6,
@@ -147,8 +151,10 @@ export class Fruit {
     this.scene.remove(this.mesh);
     this.physicsWorld.removeBody(this.body);
 
-    // 메모리 해제 / Dispose memory
-    this.mesh.geometry.dispose();
+    // 지오메트리는 공유 캐시이므로 dispose 하지 않음
     this.mesh.material.dispose();
+    const sprite = this.mesh.children[0];
+    if (sprite?.material?.map) sprite.material.map.dispose();
+    if (sprite?.material) sprite.material.dispose();
   }
 }

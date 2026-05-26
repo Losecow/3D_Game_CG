@@ -13,13 +13,12 @@ export class Merger {
    * @param {CANNON.Material} fruitMaterial
    * @param {(score: number) => void} onScore - 점수 이벤트 콜백 / Score callback
    */
-  constructor(scene, physicsWorld, fruitMaterial, onScore) {
+  constructor(scene, physicsWorld, fruitMaterial, onScore, sound) {
     this.scene = scene;
     this.physicsWorld = physicsWorld;
     this.fruitMaterial = fruitMaterial;
     this.onScore = onScore;
-
-    // 이번 프레임에 처리할 합체 대기열 / Pending merges to process this frame
+    this._sound = sound;
     this._pendingMerges = [];
   }
 
@@ -83,8 +82,8 @@ export class Merger {
       fruitA.destroy();
       fruitB.destroy();
 
-      // 점수 추가 / Add score
       this.onScore(FRUIT_DATA[fruitA.level].score);
+      this._sound.playMerge(fruitA.level);
 
       // 수박(최고 단계)끼리 합체 시 소멸만 함
       // Max level (watermelon) merge: just disappear, no new fruit
