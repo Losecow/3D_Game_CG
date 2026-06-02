@@ -98,23 +98,76 @@ export class UI {
     const auth = this._auth;
 
     document.getElementById('logout-btn').addEventListener('click', () => auth?.logout());
+    document.getElementById('nickname-edit-btn').addEventListener('click', () => this._openNicknameModal());
 
     auth?.on('login',  user => this.setUser(user));
     auth?.on('logout', ()   => this.clearUser());
 
     if (auth?.isLoggedIn) this.setUser(auth.user);
+    this._initNicknameModal();
   }
 
   setUser(user) {
     document.getElementById('user-info').classList.remove('hidden');
     document.getElementById('google-signin-btn').classList.add('hidden');
     document.getElementById('user-avatar').src = user.picture || '';
-    document.getElementById('user-name').textContent = user.name || '';
+    document.getElementById('user-name').textContent = user.nickname || user.name || '';
   }
 
   clearUser() {
     document.getElementById('user-info').classList.add('hidden');
     document.getElementById('google-signin-btn').classList.remove('hidden');
+  }
+
+  _initNicknameModal() {
+    document.getElementById('nickname-cancel').addEventListener('click', () => this._closeNicknameModal());
+    document.getElementById('nickname-save').addEventListener('click', () => this._saveNickname());
+    document.getElementById('nickname-input').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') this._saveNickname();
+      if (e.key === 'Escape') this._closeNicknameModal();
+    });
+  }
+
+  _openNicknameModal() {
+    const input = document.getElementById('nickname-input');
+    input.value = this._auth?.displayName || '';
+    document.getElementById('nickname-error').classList.add('hidden');
+    document.getElementById('nickname-modal').classList.remove('hidden');
+    input.focus();
+    input.select();
+  }
+
+  _closeNicknameModal() {
+    document.getElementById('nickname-modal').classList.add('hidden');
+  }
+
+  async _saveNickname() {
+    const input = document.getElementById('nickname-input');
+    const errorEl = document.getElementById('nickname-error');
+    const nickname = input.value.trim();
+
+    if (!nickname) {
+      errorEl.textContent = '닉네임을 입력해주세요';
+      errorEl.classList.remove('hidden');
+      return;
+    }
+
+    const saveBtn = document.getElementById('nickname-save');
+    saveBtn.disabled = true;
+    saveBtn.textContent = '저장 중...';
+
+    const saved = await this._auth?.updateNickname(nickname);
+
+    saveBtn.disabled = false;
+    saveBtn.textContent = '저장';
+
+    if (saved) {
+      document.getElementById('user-name').textContent = saved;
+      this._closeNicknameModal();
+    } else {
+      errorEl.textContent = '저장에 실패했습니다';
+      errorEl.classList.remove('hidden');
+    }
   }
 
   // ─────────────────────── 리더보드 ───────────────────────

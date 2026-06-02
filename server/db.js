@@ -9,10 +9,13 @@ async function initDB() {
       google_id  VARCHAR(255) UNIQUE NOT NULL,
       email      VARCHAR(255) NOT NULL,
       name       VARCHAR(255),
+      nickname   VARCHAR(20),
       picture    VARCHAR(500),
       created_at TIMESTAMP DEFAULT NOW()
     )
   `;
+  // 기존 DB에 nickname 컬럼 없으면 추가
+  await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS nickname VARCHAR(20)`;
   await sql`
     CREATE TABLE IF NOT EXISTS scores (
       id         SERIAL PRIMARY KEY,

@@ -16,6 +16,7 @@
       <div id="user-info" class="hidden">
         <img id="user-avatar" src="" alt="" />
         <span id="user-name"></span>
+        <button id="nickname-edit-btn" title="닉네임 변경">✏️</button>
         <button id="logout-btn">로그아웃</button>
       </div>
       <div id="google-signin-btn"></div>
@@ -50,6 +51,19 @@
         <div id="game-over-actions">
           <button id="gameover-leaderboard-btn">🏆 리더보드</button>
           <button id="restart-btn">다시 시작 / Restart</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 닉네임 설정 모달 -->
+    <div id="nickname-modal" class="hidden">
+      <div id="nickname-box">
+        <h3>닉네임 설정</h3>
+        <input id="nickname-input" type="text" maxlength="20" placeholder="닉네임 입력 (최대 20자)" />
+        <p id="nickname-error" class="hidden"></p>
+        <div id="nickname-actions">
+          <button id="nickname-cancel">취소</button>
+          <button id="nickname-save">저장</button>
         </div>
       </div>
     </div>

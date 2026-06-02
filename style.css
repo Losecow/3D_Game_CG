@@ -213,6 +213,104 @@ body {
 
 #logout-btn:hover { color: #fff; border-color: #fff; }
 
+#nickname-edit-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 2px 4px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  pointer-events: all;
+}
+
+#nickname-edit-btn:hover { opacity: 1; }
+
+/* 닉네임 모달 / Nickname modal */
+#nickname-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 300;
+}
+
+#nickname-modal.hidden { display: none; }
+
+#nickname-box {
+  background: #16213e;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 28px 32px;
+  width: 320px;
+  text-align: center;
+}
+
+#nickname-box h3 {
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+#nickname-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  padding: 10px 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#nickname-input:focus { border-color: rgba(255, 255, 255, 0.5); }
+
+#nickname-error {
+  color: #ff8080;
+  font-size: 0.8rem;
+  margin-top: 6px;
+}
+
+#nickname-error.hidden { display: none; }
+
+#nickname-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+  justify-content: center;
+}
+
+#nickname-cancel {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #aaa;
+  font-size: 0.9rem;
+  padding: 9px 20px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+#nickname-cancel:hover { color: #fff; }
+
+#nickname-save {
+  background: #4ade80;
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 9px 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#nickname-save:hover { background: #22c55e; }
+#nickname-save:disabled { opacity: 0.5; cursor: not-allowed; }
+
 #google-signin-btn.hidden { display: none; }
 
 #quit-btn {

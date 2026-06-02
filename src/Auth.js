@@ -59,6 +59,27 @@ export class Auth {
     }
   }
 
+  async updateNickname(nickname) {
+    if (!this._token) return null;
+    const res = await fetch(`${API_URL}/api/me/nickname`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${this._token}`,
+      },
+      body: JSON.stringify({ nickname }),
+    });
+    if (!res.ok) return null;
+    const { nickname: saved } = await res.json();
+    this._user = { ...this._user, nickname: saved };
+    localStorage.setItem('fruit_user', JSON.stringify(this._user));
+    return saved;
+  }
+
+  get displayName() {
+    return this._user?.nickname || this._user?.name || '';
+  }
+
   async fetchLeaderboard() {
     const res = await fetch(`${API_URL}/api/leaderboard`);
     return res.json();

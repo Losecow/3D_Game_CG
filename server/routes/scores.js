@@ -7,10 +7,13 @@ const router = express.Router();
 router.get('/leaderboard', async (req, res) => {
   try {
     const rows = await sql`
-      SELECT u.name, u.picture, MAX(s.score) AS score
+      SELECT
+        COALESCE(u.nickname, u.name) AS name,
+        u.picture,
+        MAX(s.score) AS score
       FROM scores s
       JOIN users u ON s.user_id = u.id
-      GROUP BY u.id, u.name, u.picture
+      GROUP BY u.id, u.nickname, u.name, u.picture
       ORDER BY score DESC
       LIMIT 10
     `;
@@ -31,6 +34,25 @@ router.post('/scores', authMiddleware, async (req, res) => {
     res.json({ ok: true });
   } catch (err) {
     console.error('Score submit error:', err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+router.put('/me/nickname', authMiddleware, async (req, res) => {
+  try {
+    const { nickname } = req.body;
+    if (!nickname || typeof nickname !== 'string' || !nickname.trim()) {
+      return res.status(400).json({ error: 'Invalid nickname' });
+    }
+    const trimmed = nickname.trim().slice(0, 20);
+    const [user] = await sql`
+      UPDATE users SET nickname = ${trimmed}
+      WHERE id = ${req.userId}
+      RETURNING nickname
+    `;
+    res.json({ nickname: user.nickname });
+  } catch (err) {
+    console.error('Nickname error:', err.message);
     res.status(500).json({ error: 'Server error' });
   }
 });
