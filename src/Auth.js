@@ -53,6 +53,7 @@ export class Auth {
         },
         body: JSON.stringify({ score }),
       });
+      if (res.status === 401) { this.logout(); return false; }
       return res.ok;
     } catch {
       return false;
@@ -69,6 +70,7 @@ export class Auth {
       },
       body: JSON.stringify({ nickname }),
     });
+    if (res.status === 401) { this.logout(); return null; }
     if (!res.ok) return null;
     const { nickname: saved } = await res.json();
     this._user = { ...this._user, nickname: saved };
