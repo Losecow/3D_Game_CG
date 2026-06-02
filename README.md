@@ -58,7 +58,7 @@
   </tr>
   <tr>
     <td><img src="screenshots/gameplay.png" alt="게임 플레이" /></td>
-    <td><img src="https://placehold.co/400x300/16213e/ffd700?text=Leaderboard" alt="리더보드" /></td>
+    <td><img src="screenshots/leaderboard.png" alt="리더보드" /></td>
   </tr>
 </table>
 
