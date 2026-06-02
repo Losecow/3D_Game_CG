@@ -1,5 +1,5 @@
 const GOOGLE_CLIENT_ID = '718081012338-tgmapnfrd7rc39fvf8h2sju6evap3q6j.apps.googleusercontent.com';
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_API_URL ?? '';
 
 export class Auth {
   constructor() {
