@@ -215,6 +215,26 @@ body {
 
 #google-signin-btn.hidden { display: none; }
 
+#quit-btn {
+  display: block;
+  margin-top: 8px;
+  background: rgba(255, 80, 80, 0.15);
+  border: 1px solid rgba(255, 80, 80, 0.4);
+  border-radius: 12px;
+  color: #ff8080;
+  font-size: 0.75rem;
+  padding: 7px 14px;
+  cursor: pointer;
+  pointer-events: all;
+  width: 100%;
+  transition: background 0.2s, color 0.2s;
+}
+
+#quit-btn:hover {
+  background: rgba(255, 80, 80, 0.3);
+  color: #fff;
+}
+
 /* 리더보드 버튼 / Leaderboard button */
 #leaderboard-btn {
   background: rgba(0, 0, 0, 0.6);

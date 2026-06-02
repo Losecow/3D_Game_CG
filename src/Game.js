@@ -339,6 +339,11 @@ export class Game {
     }
   }
 
+  quit() {
+    if (this._isGameOver) return;
+    this._triggerGameOver();
+  }
+
   async _triggerGameOver() {
     this._isGameOver = true;
     this._dropGuide.visible = false;
