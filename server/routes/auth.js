@@ -20,11 +20,11 @@ router.post('/google', async (req, res) => {
       VALUES (${googleId}, ${email}, ${name}, ${picture})
       ON CONFLICT (google_id) DO UPDATE
         SET name = EXCLUDED.name, picture = EXCLUDED.picture
-      RETURNING id, name, picture, email
+      RETURNING id, name, nickname, picture, email
     `;
 
     const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, user: { name: user.name, picture: user.picture, email: user.email } });
+    res.json({ token, user: { name: user.name, nickname: user.nickname, picture: user.picture, email: user.email } });
   } catch (err) {
     console.error('Auth error:', err.message);
     res.status(401).json({ error: 'Invalid credential' });

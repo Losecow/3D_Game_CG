@@ -100,10 +100,16 @@ export class UI {
     document.getElementById('logout-btn').addEventListener('click', () => auth?.logout());
     document.getElementById('nickname-edit-btn').addEventListener('click', () => this._openNicknameModal());
 
-    auth?.on('login',  user => this.setUser(user));
-    auth?.on('logout', ()   => this.clearUser());
+    auth?.on('login', user => {
+      this.setUser(user);
+      if (!user.nickname) this._openNicknameModal();
+    });
+    auth?.on('logout', () => this.clearUser());
 
-    if (auth?.isLoggedIn) this.setUser(auth.user);
+    if (auth?.isLoggedIn) {
+      this.setUser(auth.user);
+      if (!auth.user.nickname) this._openNicknameModal();
+    }
     this._initNicknameModal();
   }
 
