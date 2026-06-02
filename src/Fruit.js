@@ -3,7 +3,9 @@ import * as CANNON from 'cannon-es';
 import { FRUIT_DATA } from './FruitData.js';
 
 let _fruitIdCounter = 0;
-const _geoCache = new Map(); // 레벨별 지오메트리 공유 / Shared geometry per level
+const _geoCache  = new Map(); // 레벨별 지오메트리 공유 / Shared geometry per level
+const _texCache  = new Map(); // 레벨별 텍스쳐 공유 / Shared texture per level
+const _loader    = new THREE.TextureLoader();
 
 /**
  * 과일 하나를 나타내는 클래스 (Three.js Mesh + cannon-es Body 결합)
@@ -39,16 +41,21 @@ export class Fruit {
    * Build the Three.js sphere mesh
    */
   _buildMesh(position) {
-    const { radius, color, name } = this.data;
+    const { radius, color, name, texture } = this.data;
 
     if (!_geoCache.has(this.level)) {
-      _geoCache.set(this.level, new THREE.SphereGeometry(radius, 24, 16));
+      _geoCache.set(this.level, new THREE.SphereGeometry(radius, 32, 24));
     }
     const geo = _geoCache.get(this.level);
+
+    if (!_texCache.has(this.level)) {
+      _texCache.set(this.level, _loader.load(`/textures/${texture}`));
+    }
+
     const mat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(color),
-      roughness: 0.6,
-      metalness: 0.1,
+      map: _texCache.get(this.level),
+      roughness: 0.7,
+      metalness: 0.05,
     });
 
     this.mesh = new THREE.Mesh(geo, mat);
