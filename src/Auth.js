@@ -16,6 +16,8 @@ export class Auth {
   }
 
   async init() {
+    if (this._token) await this._validateToken();
+
     await this._waitForGoogle();
     google.accounts.id.initialize({
       client_id: GOOGLE_CLIENT_ID,
@@ -88,6 +90,23 @@ export class Auth {
   }
 
   // ───────────── private ─────────────
+
+  async _validateToken() {
+    try {
+      const res = await fetch(`${API_URL}/api/me`, {
+        headers: { 'Authorization': `Bearer ${this._token}` },
+      });
+      if (res.status === 401 || res.status === 404) {
+        this.logout();
+      } else if (res.ok) {
+        const { user } = await res.json();
+        this._user = { ...this._user, ...user };
+        localStorage.setItem('fruit_user', JSON.stringify(this._user));
+      }
+    } catch {
+      // 네트워크 오류는 무시 (오프라인 등)
+    }
+  }
 
   _waitForGoogle() {
     return new Promise(resolve => {
