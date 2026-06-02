@@ -6,7 +6,7 @@ import { Container } from './Container.js';
 import { Fruit } from './Fruit.js';
 import { Merger } from './Merger.js';
 import { UI } from './UI.js';
-import { FRUIT_DATA, MAX_DROP_LEVEL } from './FruitData.js';
+import { FRUIT_DATA, MAX_DROP_LEVEL, MAX_LEVEL } from './FruitData.js';
 import { Sound } from './Sound.js';
 
 /**
@@ -27,6 +27,7 @@ export class Game {
     // Timer for game-over detection (ms above danger line)
     this._dangerTimer = 0;
     this._dangerThreshold = 2500; // 2.5초 이상 초과 시 게임 오버
+    this._watermelons = 0;
 
     this._raycaster = new THREE.Raycaster();
     this._sound = new Sound();
@@ -350,7 +351,7 @@ export class Game {
     this._previewSphere.visible = false;
 
     const submitted = this._auth?.isLoggedIn
-      ? await this._auth.submitScore(this._score)
+      ? await this._auth.submitScore(this._score, this._watermelons)
       : null;
 
     this._ui.showGameOver(this._score, submitted, () => this._restart());
@@ -363,6 +364,7 @@ export class Game {
     this._merger.clearPending();
 
     this._score = 0;
+    this._watermelons = 0;
     this._isGameOver = false;
     this._dangerTimer = 0;
     this._dropCooldown = false;
@@ -388,7 +390,10 @@ export class Game {
 
       // 2. 합체 처리 / Process merges
       const newFruits = this._merger.processPending(this._fruits);
-      newFruits.forEach((f) => this._merger.watchFruit(f));
+      newFruits.forEach((f) => {
+        this._merger.watchFruit(f);
+        if (f.level === MAX_LEVEL) this._watermelons++;
+      });
 
       // 3. Three.js 메시 동기화 / Sync meshes
       this._fruits.forEach((f) => f.sync());

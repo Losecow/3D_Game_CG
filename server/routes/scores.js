@@ -7,13 +7,16 @@ const router = express.Router();
 router.get('/leaderboard', async (req, res) => {
   try {
     const rows = await sql`
-      SELECT
-        COALESCE(u.nickname, u.name) AS name,
-        u.picture,
-        MAX(s.score) AS score
-      FROM scores s
-      JOIN users u ON s.user_id = u.id
-      GROUP BY u.id, u.nickname, u.name, u.picture
+      SELECT name, picture, score, watermelons FROM (
+        SELECT DISTINCT ON (u.id)
+          COALESCE(u.nickname, u.name) AS name,
+          u.picture,
+          s.score,
+          s.watermelons
+        FROM scores s
+        JOIN users u ON s.user_id = u.id
+        ORDER BY u.id, s.score DESC
+      ) best
       ORDER BY score DESC
       LIMIT 10
     `;
@@ -26,11 +29,12 @@ router.get('/leaderboard', async (req, res) => {
 
 router.post('/scores', authMiddleware, async (req, res) => {
   try {
-    const { score } = req.body;
+    const { score, watermelons = 0 } = req.body;
     if (!Number.isInteger(score) || score < 0) {
       return res.status(400).json({ error: 'Invalid score' });
     }
-    await sql`INSERT INTO scores (user_id, score) VALUES (${req.userId}, ${score})`;
+    const wm = Number.isInteger(watermelons) && watermelons >= 0 ? watermelons : 0;
+    await sql`INSERT INTO scores (user_id, score, watermelons) VALUES (${req.userId}, ${score}, ${wm})`;
     res.json({ ok: true });
   } catch (err) {
     console.error('Score submit error:', err.message);

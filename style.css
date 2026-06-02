@@ -476,6 +476,12 @@ body {
   color: #fff;
 }
 
+.lb-watermelon {
+  font-size: 0.85rem;
+  color: #98FF55;
+  white-space: nowrap;
+}
+
 /* 반응형 / Responsive */
 @media (max-width: 480px) {
   #ui {

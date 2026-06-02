@@ -44,7 +44,7 @@ export class Auth {
     this._emit('logout');
   }
 
-  async submitScore(score) {
+  async submitScore(score, watermelons = 0) {
     if (!this._token) return false;
     try {
       const res = await fetch(`${API_URL}/api/scores`, {
@@ -53,7 +53,7 @@ export class Auth {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${this._token}`,
         },
-        body: JSON.stringify({ score }),
+        body: JSON.stringify({ score, watermelons }),
       });
       if (res.status === 401) { this.logout(); return false; }
       return res.ok;
