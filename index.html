@@ -5,12 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>3D 수박게임</title>
     <link rel="stylesheet" href="./style.css" />
+    <script src="https://accounts.google.com/gsi/client" async></script>
   </head>
   <body>
-    <!-- Three.js 캔버스가 여기 마운트됨 / Three.js canvas mounts here -->
+    <!-- Three.js 캔버스 -->
     <div id="canvas-container"></div>
 
-    <!-- UI 오버레이 / UI overlay -->
+    <!-- 인증 패널 (좌상단) -->
+    <div id="auth-panel">
+      <div id="user-info" class="hidden">
+        <img id="user-avatar" src="" alt="" />
+        <span id="user-name"></span>
+        <button id="logout-btn">로그아웃</button>
+      </div>
+      <div id="google-signin-btn"></div>
+    </div>
+
+    <!-- 점수 / 다음 과일 UI (우상단) -->
     <div id="ui">
       <div id="score-panel">
         <div class="score-label">점수 / SCORE</div>
@@ -23,20 +34,39 @@
         <div class="score-label">다음 / NEXT</div>
         <canvas id="next-fruit-preview" width="80" height="80"></canvas>
       </div>
+
+      <button id="leaderboard-btn">🏆 리더보드</button>
     </div>
 
-    <!-- 게임 오버 화면 / Game over screen -->
+    <!-- 게임 오버 화면 -->
     <div id="game-over" class="hidden">
       <div id="game-over-box">
         <h2>GAME OVER</h2>
         <div id="new-record" class="hidden">신기록!</div>
         <p>점수 / Score: <span id="final-score">0</span></p>
         <p>최고 점수 / Best: <span id="final-best">0</span></p>
-        <button id="restart-btn">다시 시작 / Restart</button>
+        <div id="score-submit-status"></div>
+        <div id="game-over-actions">
+          <button id="gameover-leaderboard-btn">🏆 리더보드</button>
+          <button id="restart-btn">다시 시작 / Restart</button>
+        </div>
       </div>
     </div>
 
-    <!-- 조작 안내 / Controls guide -->
+    <!-- 리더보드 모달 -->
+    <div id="leaderboard-modal" class="hidden">
+      <div id="leaderboard-box">
+        <div id="leaderboard-header">
+          <h2>🏆 리더보드</h2>
+          <button id="leaderboard-close">×</button>
+        </div>
+        <div id="leaderboard-list">
+          <div class="leaderboard-loading">불러오는 중...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 조작 안내 -->
     <div id="controls-hint">
       클릭: 과일 드롭 | 드래그: 카메라 회전 | 스크롤: 줌<br/>
       Click: Drop | Drag: Rotate | Scroll: Zoom

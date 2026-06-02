@@ -162,6 +162,202 @@ body {
   z-index: 10;
 }
 
+/* 인증 패널 / Auth panel */
+#auth-panel {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 10;
+  pointer-events: all;
+}
+
+#user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 24px;
+  padding: 6px 14px 6px 6px;
+}
+
+#user-info.hidden { display: none; }
+
+#user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+#user-name {
+  font-size: 0.85rem;
+  color: #fff;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#logout-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  color: #aaa;
+  font-size: 0.7rem;
+  padding: 3px 10px;
+  cursor: pointer;
+  pointer-events: all;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+#logout-btn:hover { color: #fff; border-color: #fff; }
+
+#google-signin-btn.hidden { display: none; }
+
+/* 리더보드 버튼 / Leaderboard button */
+#leaderboard-btn {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: #fff;
+  font-size: 0.8rem;
+  padding: 10px 16px;
+  cursor: pointer;
+  pointer-events: all;
+  width: 100%;
+  transition: background 0.2s;
+}
+
+#leaderboard-btn:hover { background: rgba(255, 255, 255, 0.1); }
+
+/* 게임 오버 액션 버튼 / Game over action buttons */
+#game-over-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 4px;
+}
+
+#gameover-leaderboard-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  padding: 12px 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  pointer-events: all;
+  transition: background 0.2s;
+}
+
+#gameover-leaderboard-btn:hover { background: rgba(255, 255, 255, 0.2); }
+
+/* 점수 제출 상태 / Score submit status */
+#score-submit-status {
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+  min-height: 20px;
+}
+
+.submit-ok   { color: #4ade80; }
+.submit-hint { color: #aaa; }
+
+/* 리더보드 모달 / Leaderboard modal */
+#leaderboard-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+#leaderboard-modal.hidden { display: none; }
+
+#leaderboard-box {
+  background: #16213e;
+  border: 2px solid rgba(255, 215, 0, 0.4);
+  border-radius: 20px;
+  padding: 32px 40px;
+  min-width: 320px;
+  max-width: 440px;
+  width: 90%;
+}
+
+#leaderboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+#leaderboard-header h2 {
+  font-size: 1.5rem;
+  color: #ffd700;
+}
+
+#leaderboard-close {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+}
+
+#leaderboard-close:hover { color: #fff; }
+
+.leaderboard-loading {
+  color: #aaa;
+  text-align: center;
+  padding: 20px 0;
+  font-size: 0.9rem;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.leaderboard-row:last-child { border-bottom: none; }
+
+.lb-rank {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffd700;
+  width: 24px;
+  text-align: center;
+}
+
+.lb-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.lb-name {
+  flex: 1;
+  font-size: 0.9rem;
+  color: #eee;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lb-score {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+}
+
 /* 반응형 / Responsive */
 @media (max-width: 480px) {
   #ui {

@@ -14,8 +14,9 @@ import { Sound } from './Sound.js';
  * Main game class: orchestrates scene, loop, and state management
  */
 export class Game {
-  constructor(container) {
+  constructor(container, auth = null) {
     this._container = container; // DOM 마운트 컨테이너 / DOM mount container
+    this._auth = auth;
     this._fruits = [];           // 현재 씬의 모든 과일 / All fruits in scene
     this._score = 0;
     this._isGameOver = false;
@@ -174,7 +175,7 @@ export class Game {
 
   /** UI 초기화 / Initialize UI */
   _initUI() {
-    this._ui = new UI();
+    this._ui = new UI(this._auth);
   }
 
   /** 이벤트 리스너 등록 / Register event listeners */
@@ -338,11 +339,16 @@ export class Game {
     }
   }
 
-  _triggerGameOver() {
+  async _triggerGameOver() {
     this._isGameOver = true;
     this._dropGuide.visible = false;
     this._previewSphere.visible = false;
-    this._ui.showGameOver(this._score, () => this._restart());
+
+    const submitted = this._auth?.isLoggedIn
+      ? await this._auth.submitScore(this._score)
+      : null;
+
+    this._ui.showGameOver(this._score, submitted, () => this._restart());
   }
 
   /** 게임 재시작 / Restart the game */

@@ -1,0 +1,27 @@
+services:
+  # 백엔드 API 서버
+  - type: web
+    name: fruit-game-api
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node index.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        value: 718081012338-tgmapnfrd7rc39fvf8h2sju6evap3q6j.apps.googleusercontent.com
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        sync: false
+
+  # 프론트엔드 정적 사이트
+  - type: static
+    name: fruit-game
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false

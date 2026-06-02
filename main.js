@@ -1,5 +1,6 @@
 import { Game } from './src/Game.js';
+import { Auth } from './src/Auth.js';
 
-// DOM이 준비되면 게임 인스턴스 생성 / Create game instance after DOM is ready
-const container = document.getElementById('canvas-container');
-new Game(container);
+const auth = new Auth();
+new Game(document.getElementById('canvas-container'), auth);
+auth.init();
