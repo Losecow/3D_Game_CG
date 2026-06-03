@@ -43,7 +43,6 @@ export class Game {
     this._initContainer();
     this._initCamera();
     this._initTopCamera();
-    this._initSideCamera();
     this._initLights();
     this._initDropGuide();
     this._initMerger();
@@ -199,31 +198,17 @@ export class Game {
     this._topCamera.lookAt(0, 0, 0);
   }
 
+  // 왼쪽(탑다운) 60%, 오른쪽(원근) 40%
+  get _splitLeft() { return Math.floor(window.innerWidth * 0.6); }
+
   _updateTopCamera() {
-    const aspect = (window.innerWidth / 2) / window.innerHeight;
+    const aspect = this._splitLeft / window.innerHeight;
     const hw = this._gameContainer.depth / 2 + 4;
     this._topCamera.left   = -hw * aspect;
     this._topCamera.right  =  hw * aspect;
     this._topCamera.top    =  hw;
     this._topCamera.bottom = -hw;
     this._topCamera.updateProjectionMatrix();
-  }
-
-  /** 왼쪽 패널용 고정 사이드 카메라 / Fixed side camera for left panel */
-  _initSideCamera() {
-    this._sideCamera = new THREE.PerspectiveCamera(
-      55,
-      (window.innerWidth / 2) / window.innerHeight,
-      0.1,
-      200
-    );
-    this._sideCamera.position.set(28, 10, 0);
-    this._sideCamera.lookAt(0, 10, 0);
-  }
-
-  _updateSideCamera() {
-    this._sideCamera.aspect = (window.innerWidth / 2) / window.innerHeight;
-    this._sideCamera.updateProjectionMatrix();
   }
 
   get isSplitView() { return this._splitView; }
@@ -242,10 +227,10 @@ export class Game {
   toggleSplitView() {
     this._splitView = !this._splitView;
     if (this._splitView) {
-      this._controls.enabled = false;
       this._dropGuide.visible = false;
       this._previewSphere.visible = false;
-      this._updateSideCamera();
+      this._camera.aspect = (window.innerWidth - this._splitLeft) / window.innerHeight;
+      this._camera.updateProjectionMatrix();
       this._updateTopCamera();
     } else {
       this._controls.enabled = true;
@@ -260,6 +245,14 @@ export class Game {
     window.addEventListener('mousemove', (e) => this._onMouseMove(e));
     window.addEventListener('click',     (e) => this._onMouseClick(e));
     window.addEventListener('resize',    ()  => this._onResize());
+
+    // 분할 뷰에서 오른쪽 패널에만 OrbitControls 활성화 / Enable controls only on right panel in split view
+    this._renderer.domElement.addEventListener('mousedown', (e) => {
+      if (this._splitView) this._controls.enabled = e.clientX >= this._splitLeft;
+    });
+    this._renderer.domElement.addEventListener('mouseleave', () => {
+      if (this._splitView) this._controls.enabled = true;
+    });
 
     // 스페이스바 드롭 / Spacebar drop
     window.addEventListener('keydown', (e) => {
@@ -293,8 +286,8 @@ export class Game {
     }
 
     if (this._splitView) {
-      const isRightPanel = event.clientX > window.innerWidth / 2;
-      if (!isRightPanel) {
+      const isLeftPanel = event.clientX < this._splitLeft;
+      if (!isLeftPanel) {
         this._dropGuide.visible = false;
         this._previewSphere.visible = false;
         this._renderer.domElement.style.cursor = 'default';
@@ -338,7 +331,7 @@ export class Game {
     if (event.target?.closest?.('#ui, #auth-panel, #signin-area, #game-over, #controls-hint, #settings-modal, #leaderboard-modal, #nickname-modal, #feedback-modal')) return;
 
     if (this._splitView) {
-      if (event.clientX <= window.innerWidth / 2) return;
+      if (event.clientX >= this._splitLeft) return;
       const pos = this._getDropPositionTopDown(event);
       if (!pos) return;
       this._dropFruit(pos);
@@ -352,7 +345,8 @@ export class Game {
 
   _onResize() {
     if (this._splitView) {
-      this._updateSideCamera();
+      this._camera.aspect = (window.innerWidth - this._splitLeft) / window.innerHeight;
+      this._camera.updateProjectionMatrix();
       this._updateTopCamera();
     } else {
       this._camera.aspect = window.innerWidth / window.innerHeight;
@@ -395,11 +389,10 @@ export class Game {
 
   /** 오른쪽 패널(탑다운 카메라)에서 XZ 드롭 좌표 계산 / Raycast using top-down camera for right panel */
   _getDropPositionTopDown(event) {
-    const w = window.innerWidth;
     const h = window.innerHeight;
-    const half = Math.floor(w / 2);
+    const leftW = this._splitLeft;
 
-    const normalizedX = ((event.clientX - half) / (w - half)) * 2 - 1;
+    const normalizedX = (event.clientX / leftW) * 2 - 1;
     const normalizedY = -(event.clientY / h) * 2 + 1;
 
     this._raycaster.setFromCamera(new THREE.Vector2(normalizedX, normalizedY), this._topCamera);
@@ -567,25 +560,25 @@ export class Game {
     if (this._splitView) {
       const w = window.innerWidth;
       const h = window.innerHeight;
-      const half = Math.floor(w / 2);
+      const leftW = this._splitLeft;
+      const rightW = w - leftW;
 
       this._renderer.setScissorTest(true);
 
-      // 왼쪽 패널: 고정 사이드 카메라 (높이 확인) / Left panel: fixed side camera (height view)
-      this._renderer.setViewport(0, 0, half, h);
-      this._renderer.setScissor(0, 0, half, h);
-      this._renderer.render(this._scene, this._sideCamera);
-
-      // 오른쪽 패널: 위에서 보는 카메라 (fog 제거로 선명하게) / Right panel: top-down, fog off
-      this._renderer.setViewport(half, 0, w - half, h);
-      this._renderer.setScissor(half, 0, w - half, h);
+      // 왼쪽 패널: 탑다운 카메라 (드롭 조작, fog 제거) / Left panel: top-down (drop, fog off)
+      this._renderer.setViewport(0, 0, leftW, h);
+      this._renderer.setScissor(0, 0, leftW, h);
       const savedFog = this._scene.fog;
       this._scene.fog = null;
       this._renderer.render(this._scene, this._topCamera);
       this._scene.fog = savedFog;
 
+      // 오른쪽 패널: 원근 카메라 (회전 가능) / Right panel: perspective (orbit controls)
+      this._renderer.setViewport(leftW, 0, rightW, h);
+      this._renderer.setScissor(leftW, 0, rightW, h);
+      this._renderer.render(this._scene, this._camera);
+
       this._renderer.setScissorTest(false);
-      // viewport 전체 크기로 복원 / Restore full viewport
       this._renderer.setViewport(0, 0, w, h);
     } else {
       const w = window.innerWidth;
