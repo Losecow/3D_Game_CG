@@ -5,10 +5,10 @@
 }
 
 body {
-  background: #1a1a2e;
+  background: #ffffff;
   overflow: hidden;
   font-family: 'Segoe UI', sans-serif;
-  color: #fff;
+  color: #111;
 }
 
 /* Three.js 캔버스 컨테이너 / Canvas container */

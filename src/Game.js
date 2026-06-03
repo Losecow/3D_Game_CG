@@ -68,8 +68,8 @@ export class Game {
   /** Three.js 씬 설정 / Set up Three.js scene */
   _initScene() {
     this._scene = new THREE.Scene();
-    this._scene.background = new THREE.Color(0x1a1a2e);
-    this._scene.fog = new THREE.Fog(0x1a1a2e, 40, 80);
+    this._scene.background = new THREE.Color(0xffffff);
+    this._scene.fog = new THREE.Fog(0xffffff, 40, 80);
   }
 
   /** cannon-es 물리 세계 초기화 / Initialize cannon-es physics world */
