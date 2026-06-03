@@ -40,6 +40,7 @@ export class Game {
     this._initContainer();
     this._initCamera();
     this._initTopCamera();
+    this._initSideCamera();
     this._initLights();
     this._initDropGuide();
     this._initMerger();
@@ -189,7 +190,7 @@ export class Game {
     this._topCamera = new THREE.OrthographicCamera(
       -hw * aspect, hw * aspect, hw, -hw, 0.1, 200
     );
-    this._topCamera.position.set(0, 80, 0);
+    this._topCamera.position.set(0, 50, 0);
     this._topCamera.up.set(0, 0, -1);
     this._topCamera.lookAt(0, 0, 0);
   }
@@ -204,14 +205,34 @@ export class Game {
     this._topCamera.updateProjectionMatrix();
   }
 
+  /** 왼쪽 패널용 고정 사이드 카메라 / Fixed side camera for left panel */
+  _initSideCamera() {
+    this._sideCamera = new THREE.PerspectiveCamera(
+      55,
+      (window.innerWidth / 2) / window.innerHeight,
+      0.1,
+      200
+    );
+    this._sideCamera.position.set(28, 10, 0);
+    this._sideCamera.lookAt(0, 10, 0);
+  }
+
+  _updateSideCamera() {
+    this._sideCamera.aspect = (window.innerWidth / 2) / window.innerHeight;
+    this._sideCamera.updateProjectionMatrix();
+  }
+
   /** 분할 뷰 토글 / Toggle split view */
   toggleSplitView() {
     this._splitView = !this._splitView;
     if (this._splitView) {
-      this._camera.aspect = 0.5 * window.innerWidth / window.innerHeight;
-      this._camera.updateProjectionMatrix();
+      this._controls.enabled = false;
+      this._dropGuide.visible = false;
+      this._previewSphere.visible = false;
+      this._updateSideCamera();
       this._updateTopCamera();
     } else {
+      this._controls.enabled = true;
       this._camera.aspect = window.innerWidth / window.innerHeight;
       this._camera.updateProjectionMatrix();
     }
@@ -239,9 +260,27 @@ export class Game {
 
   _onMouseMove(event) {
     if (this._isGameOver) return;
-    if (this._splitView && event.clientX > window.innerWidth / 2) {
-      this._dropGuide.visible = false;
-      this._previewSphere.visible = false;
+
+    if (this._splitView) {
+      const isRightPanel = event.clientX > window.innerWidth / 2;
+      if (!isRightPanel) {
+        this._dropGuide.visible = false;
+        this._previewSphere.visible = false;
+        this._renderer.domElement.style.cursor = 'default';
+        return;
+      }
+      const pos = this._getDropPositionTopDown(event);
+      if (!pos) {
+        this._dropGuide.visible = false;
+        this._previewSphere.visible = false;
+        return;
+      }
+      const spawnY = this._gameContainer.height + 1.5;
+      this._dropGuide.position.set(pos.x, spawnY / 2, pos.z);
+      this._dropGuide.visible = true;
+      this._previewSphere.position.set(pos.x, spawnY, pos.z);
+      this._previewSphere.visible = true;
+      this._renderer.domElement.style.cursor = this._dropCooldown ? 'not-allowed' : 'crosshair';
       return;
     }
 
@@ -251,36 +290,38 @@ export class Game {
       this._previewSphere.visible = false;
       return;
     }
-
     const spawnY = this._gameContainer.height + 1.5;
     this._dropGuide.position.set(pos.x, spawnY / 2, pos.z);
     this._dropGuide.visible = true;
-
     this._previewSphere.position.set(pos.x, spawnY, pos.z);
     this._previewSphere.visible = true;
-
-    // 쿨다운 중 커서 변경 / Cursor feedback during cooldown
     this._renderer.domElement.style.cursor = this._dropCooldown ? 'not-allowed' : 'crosshair';
   }
 
   _onMouseClick(event) {
     if (this._isGameOver || this._dropCooldown) return;
-    if (this._splitView && event.clientX > window.innerWidth / 2) return;
+
+    if (this._splitView) {
+      if (event.clientX <= window.innerWidth / 2) return;
+      const pos = this._getDropPositionTopDown(event);
+      if (!pos) return;
+      this._dropFruit(pos);
+      return;
+    }
 
     const pos = this._getDropPosition(event);
     if (!pos) return;
-
     this._dropFruit(pos);
   }
 
   _onResize() {
     if (this._splitView) {
-      this._camera.aspect = 0.5 * window.innerWidth / window.innerHeight;
+      this._updateSideCamera();
       this._updateTopCamera();
     } else {
       this._camera.aspect = window.innerWidth / window.innerHeight;
+      this._camera.updateProjectionMatrix();
     }
-    this._camera.updateProjectionMatrix();
     this._renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
@@ -291,9 +332,8 @@ export class Game {
    * Convert mouse position to XZ coordinate above container floor
    */
   _getDropPosition(event) {
-    const panelWidth = this._splitView ? window.innerWidth / 2 : window.innerWidth;
     const mouse = new THREE.Vector2(
-      (event.clientX / panelWidth) * 2 - 1,
+      (event.clientX / window.innerWidth) * 2 - 1,
       -(event.clientY / window.innerHeight) * 2 + 1
     );
 
@@ -312,6 +352,29 @@ export class Game {
     target.x = Math.max(-hw, Math.min(hw, target.x));
     target.z = Math.max(-hd, Math.min(hd, target.z));
 
+    return target;
+  }
+
+  /** 오른쪽 패널(탑다운 카메라)에서 XZ 드롭 좌표 계산 / Raycast using top-down camera for right panel */
+  _getDropPositionTopDown(event) {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    const half = Math.floor(w / 2);
+
+    const normalizedX = ((event.clientX - half) / (w - half)) * 2 - 1;
+    const normalizedY = -(event.clientY / h) * 2 + 1;
+
+    this._raycaster.setFromCamera(new THREE.Vector2(normalizedX, normalizedY), this._topCamera);
+
+    const dropPlaneY = this._gameContainer.height + 2;
+    const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -dropPlaneY);
+    const target = new THREE.Vector3();
+    if (!this._raycaster.ray.intersectPlane(plane, target)) return null;
+
+    const hw = this._gameContainer.width / 2 - 0.5;
+    const hd = this._gameContainer.depth / 2 - 0.5;
+    target.x = Math.max(-hw, Math.min(hw, target.x));
+    target.z = Math.max(-hd, Math.min(hd, target.z));
     return target;
   }
 
@@ -464,18 +527,26 @@ export class Game {
 
       this._renderer.setScissorTest(true);
 
-      // 왼쪽 패널: 원근 카메라 / Left panel: perspective camera
+      // 왼쪽 패널: 고정 사이드 카메라 (높이 확인) / Left panel: fixed side camera (height view)
       this._renderer.setViewport(0, 0, half, h);
       this._renderer.setScissor(0, 0, half, h);
-      this._renderer.render(this._scene, this._camera);
+      this._renderer.render(this._scene, this._sideCamera);
 
-      // 오른쪽 패널: 위에서 보는 카메라 / Right panel: top-down camera
+      // 오른쪽 패널: 위에서 보는 카메라 (fog 제거로 선명하게) / Right panel: top-down, fog off
       this._renderer.setViewport(half, 0, w - half, h);
       this._renderer.setScissor(half, 0, w - half, h);
+      const savedFog = this._scene.fog;
+      this._scene.fog = null;
       this._renderer.render(this._scene, this._topCamera);
+      this._scene.fog = savedFog;
 
       this._renderer.setScissorTest(false);
+      // viewport 전체 크기로 복원 / Restore full viewport
+      this._renderer.setViewport(0, 0, w, h);
     } else {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      this._renderer.setViewport(0, 0, w, h);
       this._renderer.render(this._scene, this._camera);
     }
   }
