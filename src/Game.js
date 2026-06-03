@@ -21,6 +21,7 @@ export class Game {
     this._score = 0;
     this._isGameOver = false;
     this._dropCooldown = false;  // 연속 드롭 방지 / Prevent rapid dropping
+    this._currentLevel = this._randomLevel();
     this._nextLevel = this._randomLevel();
 
     // 게임 오버 판정용 타이머 (위험선 초과 지속 시간 ms)
@@ -47,6 +48,7 @@ export class Game {
     this._initUI();
     this._initEvents();
 
+    this._ui.setCurrentFruit(this._currentLevel);
     this._ui.setNextFruit(this._nextLevel);
 
     this._lastTime = performance.now();
@@ -155,7 +157,7 @@ export class Game {
 
   /** 드롭할 과일 미리보기 구체 / Drop position preview sphere */
   _initPreviewSphere() {
-    const data = FRUIT_DATA[this._nextLevel];
+    const data = FRUIT_DATA[this._currentLevel];
     const geo = new THREE.SphereGeometry(data.radius, 24, 16);
     const mat = new THREE.MeshStandardMaterial({
       color: new THREE.Color(data.color),
@@ -348,7 +350,7 @@ export class Game {
 
     // 과일 반지름만큼 여백을 두어 테두리가 벽 안쪽에 오도록 클램핑
     // Clamp so the fruit edge stays inside the container walls
-    const r = FRUIT_DATA[this._nextLevel].radius;
+    const r = FRUIT_DATA[this._currentLevel].radius;
     const hw = this._gameContainer.width / 2 - r;
     const hd = this._gameContainer.depth / 2 - r;
     target.x = Math.max(-hw, Math.min(hw, target.x));
@@ -374,7 +376,7 @@ export class Game {
     if (!this._raycaster.ray.intersectPlane(plane, target)) return null;
 
     // 과일 반지름만큼 여백을 두어 테두리가 벽 안쪽에 오도록 클램핑
-    const r = FRUIT_DATA[this._nextLevel].radius;
+    const r = FRUIT_DATA[this._currentLevel].radius;
     const hw = this._gameContainer.width / 2 - r;
     const hd = this._gameContainer.depth / 2 - r;
     target.x = Math.max(-hw, Math.min(hw, target.x));
@@ -387,7 +389,7 @@ export class Game {
    * Drop a fruit at the specified position
    */
   _dropFruit(position) {
-    const level = this._nextLevel;
+    const level = this._currentLevel;
     const dropPos = new THREE.Vector3(
       position.x,
       this._gameContainer.height + 1.5,
@@ -406,8 +408,10 @@ export class Game {
     this._merger.watchFruit(fruit);
     this._sound.playDrop();
 
-    // 다음 과일 준비 / Prepare next fruit
+    // 현재 → 다음으로 시프트, 새 다음 과일 뽑기 / Shift current→next, draw new next
+    this._currentLevel = this._nextLevel;
     this._nextLevel = this._randomLevel();
+    this._ui.setCurrentFruit(this._currentLevel);
     this._ui.setNextFruit(this._nextLevel);
     this._updatePreviewSphere();
 
@@ -487,8 +491,10 @@ export class Game {
     this._dangerTimer = 0;
     this._dropCooldown = false;
 
+    this._currentLevel = this._randomLevel();
     this._nextLevel = this._randomLevel();
     this._ui.setScore(0);
+    this._ui.setCurrentFruit(this._currentLevel);
     this._ui.setNextFruit(this._nextLevel);
     this._updatePreviewSphere();
   }

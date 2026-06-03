@@ -33,8 +33,17 @@
       </div>
 
       <div id="next-panel">
-        <div class="score-label">다음 / NEXT</div>
-        <canvas id="next-fruit-preview" width="80" height="80"></canvas>
+        <div id="fruit-previews">
+          <div class="fruit-preview-col">
+            <div class="score-label">현재 / NOW</div>
+            <canvas id="current-fruit-preview" width="72" height="72"></canvas>
+          </div>
+          <div class="preview-arrow">▶</div>
+          <div class="fruit-preview-col">
+            <div class="score-label">다음 / NEXT</div>
+            <canvas id="next-fruit-preview" width="52" height="52"></canvas>
+          </div>
+        </div>
       </div>
 
       <button id="leaderboard-btn">🏆 리더보드</button>

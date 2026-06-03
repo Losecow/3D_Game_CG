@@ -11,6 +11,8 @@ export class UI {
     this._newRecordEl   = document.getElementById('new-record');
     this._gameOverEl    = document.getElementById('game-over');
     this._restartBtn    = document.getElementById('restart-btn');
+    this._currentCanvas = document.getElementById('current-fruit-preview');
+    this._currentCtx    = this._currentCanvas.getContext('2d');
     this._previewCanvas = document.getElementById('next-fruit-preview');
     this._previewCtx    = this._previewCanvas.getContext('2d');
     this._submitStatus  = document.getElementById('score-submit-status');
@@ -35,15 +37,15 @@ export class UI {
     }
   }
 
-  setNextFruit(level) {
+  _drawPreview(canvas, ctx, level) {
     const { color, name } = FRUIT_DATA[level];
-    const ctx = this._previewCtx;
-    const w = this._previewCanvas.width;
-    const h = this._previewCanvas.height;
+    const w = canvas.width;
+    const h = canvas.height;
+    const r = Math.floor(Math.min(w, h) / 2) - 6;
 
     ctx.clearRect(0, 0, w, h);
     ctx.beginPath();
-    ctx.arc(w / 2, h / 2 - 4, 24, 0, Math.PI * 2);
+    ctx.arc(w / 2, h / 2 - 4, r, 0, Math.PI * 2);
     ctx.fillStyle = color;
     ctx.fill();
     ctx.strokeStyle = 'rgba(255,255,255,0.4)';
@@ -54,7 +56,15 @@ export class UI {
     ctx.font = 'bold 11px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'top';
-    ctx.fillText(name, w / 2, h - 16);
+    ctx.fillText(name, w / 2, h - 14);
+  }
+
+  setCurrentFruit(level) {
+    this._drawPreview(this._currentCanvas, this._currentCtx, level);
+  }
+
+  setNextFruit(level) {
+    this._drawPreview(this._previewCanvas, this._previewCtx, level);
   }
 
   // ─────────────────────── 게임 오버 ───────────────────────
