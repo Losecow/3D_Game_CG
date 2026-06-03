@@ -29,6 +29,8 @@ export class Game {
     this._dangerThreshold = 2500; // 2.5초 이상 초과 시 게임 오버
     this._watermelons = 0;
 
+    this._splitView = false;
+
     this._raycaster = new THREE.Raycaster();
     this._sound = new Sound();
 
@@ -37,6 +39,7 @@ export class Game {
     this._initPhysics();
     this._initContainer();
     this._initCamera();
+    this._initTopCamera();
     this._initLights();
     this._initDropGuide();
     this._initMerger();
@@ -179,6 +182,42 @@ export class Game {
     this._ui = new UI(this._auth);
   }
 
+  /** 위에서 내려다보는 직교 카메라 / Top-down orthographic camera */
+  _initTopCamera() {
+    const aspect = (window.innerWidth / 2) / window.innerHeight;
+    const hw = this._gameContainer.depth / 2 + 4;
+    this._topCamera = new THREE.OrthographicCamera(
+      -hw * aspect, hw * aspect, hw, -hw, 0.1, 200
+    );
+    this._topCamera.position.set(0, 80, 0);
+    this._topCamera.up.set(0, 0, -1);
+    this._topCamera.lookAt(0, 0, 0);
+  }
+
+  _updateTopCamera() {
+    const aspect = (window.innerWidth / 2) / window.innerHeight;
+    const hw = this._gameContainer.depth / 2 + 4;
+    this._topCamera.left   = -hw * aspect;
+    this._topCamera.right  =  hw * aspect;
+    this._topCamera.top    =  hw;
+    this._topCamera.bottom = -hw;
+    this._topCamera.updateProjectionMatrix();
+  }
+
+  /** 분할 뷰 토글 / Toggle split view */
+  toggleSplitView() {
+    this._splitView = !this._splitView;
+    if (this._splitView) {
+      this._camera.aspect = 0.5 * window.innerWidth / window.innerHeight;
+      this._camera.updateProjectionMatrix();
+      this._updateTopCamera();
+    } else {
+      this._camera.aspect = window.innerWidth / window.innerHeight;
+      this._camera.updateProjectionMatrix();
+    }
+    return this._splitView;
+  }
+
   /** 이벤트 리스너 등록 / Register event listeners */
   _initEvents() {
     window.addEventListener('mousemove', (e) => this._onMouseMove(e));
@@ -200,6 +239,11 @@ export class Game {
 
   _onMouseMove(event) {
     if (this._isGameOver) return;
+    if (this._splitView && event.clientX > window.innerWidth / 2) {
+      this._dropGuide.visible = false;
+      this._previewSphere.visible = false;
+      return;
+    }
 
     const pos = this._getDropPosition(event);
     if (!pos) {
@@ -221,6 +265,7 @@ export class Game {
 
   _onMouseClick(event) {
     if (this._isGameOver || this._dropCooldown) return;
+    if (this._splitView && event.clientX > window.innerWidth / 2) return;
 
     const pos = this._getDropPosition(event);
     if (!pos) return;
@@ -229,7 +274,12 @@ export class Game {
   }
 
   _onResize() {
-    this._camera.aspect = window.innerWidth / window.innerHeight;
+    if (this._splitView) {
+      this._camera.aspect = 0.5 * window.innerWidth / window.innerHeight;
+      this._updateTopCamera();
+    } else {
+      this._camera.aspect = window.innerWidth / window.innerHeight;
+    }
     this._camera.updateProjectionMatrix();
     this._renderer.setSize(window.innerWidth, window.innerHeight);
   }
@@ -241,8 +291,9 @@ export class Game {
    * Convert mouse position to XZ coordinate above container floor
    */
   _getDropPosition(event) {
+    const panelWidth = this._splitView ? window.innerWidth / 2 : window.innerWidth;
     const mouse = new THREE.Vector2(
-      (event.clientX / window.innerWidth) * 2 - 1,
+      (event.clientX / panelWidth) * 2 - 1,
       -(event.clientY / window.innerHeight) * 2 + 1
     );
 
@@ -406,6 +457,26 @@ export class Game {
     this._controls.update();
 
     // 6. 렌더 / Render
-    this._renderer.render(this._scene, this._camera);
+    if (this._splitView) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const half = Math.floor(w / 2);
+
+      this._renderer.setScissorTest(true);
+
+      // 왼쪽 패널: 원근 카메라 / Left panel: perspective camera
+      this._renderer.setViewport(0, 0, half, h);
+      this._renderer.setScissor(0, 0, half, h);
+      this._renderer.render(this._scene, this._camera);
+
+      // 오른쪽 패널: 위에서 보는 카메라 / Right panel: top-down camera
+      this._renderer.setViewport(half, 0, w - half, h);
+      this._renderer.setScissor(half, 0, w - half, h);
+      this._renderer.render(this._scene, this._topCamera);
+
+      this._renderer.setScissorTest(false);
+    } else {
+      this._renderer.render(this._scene, this._camera);
+    }
   }
 }

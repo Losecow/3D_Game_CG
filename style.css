@@ -334,7 +334,8 @@ body {
 }
 
 /* 리더보드 버튼 / Leaderboard button */
-#leaderboard-btn {
+#leaderboard-btn,
+#splitview-btn {
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
@@ -344,10 +345,17 @@ body {
   cursor: pointer;
   pointer-events: all;
   width: 100%;
-  transition: background 0.2s;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
-#leaderboard-btn:hover { background: rgba(255, 255, 255, 0.1); }
+#leaderboard-btn:hover,
+#splitview-btn:hover { background: rgba(255, 255, 255, 0.1); }
+
+#splitview-btn.active {
+  background: rgba(100, 200, 255, 0.15);
+  border-color: rgba(100, 200, 255, 0.5);
+  color: #88ddff;
+}
 
 /* 게임 오버 액션 버튼 / Game over action buttons */
 #game-over-actions {
