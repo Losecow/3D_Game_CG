@@ -8,7 +8,7 @@ router.post('/', auth, async (req, res) => {
   if (!content)          return res.status(400).json({ error: 'empty' });
   if (content.length > 500) return res.status(400).json({ error: 'too long' });
 
-  await sql`INSERT INTO feedback (user_id, content) VALUES (${req.user.id}, ${content})`;
+  await sql`INSERT INTO feedback (user_id, content) VALUES (${req.userId}, ${content})`;
   res.json({ ok: true });
 });
 
