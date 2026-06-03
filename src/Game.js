@@ -177,7 +177,8 @@ export class Game {
       this._physicsWorld,
       this._world.fruitMaterial,
       (score) => this._addScore(score),
-      this._sound
+      this._sound,
+      () => { this._watermelons++; }
     );
   }
 
