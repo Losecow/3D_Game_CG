@@ -229,6 +229,13 @@ export class Game {
   get isSplitView() { return this._splitView; }
   get sound()       { return this._sound; }
 
+  /** 모달이 열려있으면 드롭 차단 / Block drop when any modal is open */
+  _isAnyModalOpen() {
+    return ['settings-modal', 'leaderboard-modal', 'nickname-modal'].some(
+      id => !document.getElementById(id).classList.contains('hidden')
+    );
+  }
+
   setDropMode(mode) { this._dropMode = mode; }
 
   /** 분할 뷰 토글 / Toggle split view */
@@ -258,7 +265,7 @@ export class Game {
     window.addEventListener('keydown', (e) => {
       if (e.code === 'Space' && !e.repeat) {
         e.preventDefault();
-        if (this._dropMode === 'space' && !this._isGameOver && !this._dropCooldown && this._lastDropPos) {
+        if (this._dropMode === 'space' && !this._isGameOver && !this._dropCooldown && !this._isAnyModalOpen() && this._lastDropPos) {
           this._dropFruit(this._lastDropPos);
         }
       }
@@ -279,6 +286,11 @@ export class Game {
 
   _onMouseMove(event) {
     if (this._isGameOver) return;
+    if (this._isAnyModalOpen()) {
+      this._dropGuide.visible = false;
+      this._previewSphere.visible = false;
+      return;
+    }
 
     if (this._splitView) {
       const isRightPanel = event.clientX > window.innerWidth / 2;
@@ -322,6 +334,8 @@ export class Game {
   _onMouseClick(event) {
     if (this._isGameOver || this._dropCooldown) return;
     if (this._dropMode !== 'click') return;
+    if (this._isAnyModalOpen()) return;
+    if (event.target?.closest?.('#ui, #auth-panel, #signin-area, #game-over, #controls-hint')) return;
 
     if (this._splitView) {
       if (event.clientX <= window.innerWidth / 2) return;
