@@ -57,6 +57,12 @@ export class Settings {
       this.handleSplitViewToggle();
     });
 
+    // 게임 종료
+    document.getElementById('settings-quit-btn').addEventListener('click', () => {
+      this._close();
+      if (confirm('게임을 종료할까요?')) this._game.quit();
+    });
+
     // 드롭 방식
     const clickBtn = document.getElementById('drop-mode-click');
     const spaceBtn = document.getElementById('drop-mode-space');

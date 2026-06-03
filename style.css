@@ -332,38 +332,22 @@ body {
 
 #google-signin-btn.hidden { display: none; }
 
-#quit-btn {
-  display: block;
-  margin-top: 8px;
-  background: rgba(255, 80, 80, 0.15);
-  border: 1px solid rgba(255, 80, 80, 0.4);
-  border-radius: 12px;
-  color: #ff8080;
-  font-size: 0.75rem;
-  padding: 7px 14px;
-  cursor: pointer;
-  pointer-events: all;
-  width: 100%;
-  transition: background 0.2s, color 0.2s;
-}
-
-#quit-btn:hover {
-  background: rgba(255, 80, 80, 0.3);
-  color: #fff;
-}
-
-/* 리더보드 버튼 / Leaderboard button */
-#score-row {
+/* 구글 로그인 + 설정 버튼 (우하단) / Sign-in area (bottom-right) */
+#signin-area {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-end;
   gap: 8px;
+  z-index: 10;
+  pointer-events: all;
 }
 
 #settings-btn {
   width: 36px;
   height: 36px;
-  flex-shrink: 0;
-  align-self: stretch;
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 10px;
@@ -524,6 +508,28 @@ body {
 }
 
 .mode-btn:hover:not(.active) { background: rgba(255, 255, 255, 0.12); }
+
+.settings-danger-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 20px;
+  margin-top: -4px;
+}
+
+.settings-danger-btn {
+  background: rgba(255, 80, 80, 0.15);
+  border: 1px solid rgba(255, 80, 80, 0.4);
+  border-radius: 8px;
+  color: #ff8080;
+  font-size: 0.85rem;
+  padding: 7px 20px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.settings-danger-btn:hover {
+  background: rgba(255, 80, 80, 0.3);
+  color: #fff;
+}
 
 /* 게임 오버 액션 버튼 / Game over action buttons */
 #game-over-actions {
