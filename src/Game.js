@@ -346,9 +346,11 @@ export class Game {
 
     if (!hit) return null;
 
-    // 컨테이너 XZ 경계 내로 클램핑 / Clamp within container XZ bounds
-    const hw = this._gameContainer.width / 2 - 0.5;
-    const hd = this._gameContainer.depth / 2 - 0.5;
+    // 과일 반지름만큼 여백을 두어 테두리가 벽 안쪽에 오도록 클램핑
+    // Clamp so the fruit edge stays inside the container walls
+    const r = FRUIT_DATA[this._nextLevel].radius;
+    const hw = this._gameContainer.width / 2 - r;
+    const hd = this._gameContainer.depth / 2 - r;
     target.x = Math.max(-hw, Math.min(hw, target.x));
     target.z = Math.max(-hd, Math.min(hd, target.z));
 
@@ -371,8 +373,10 @@ export class Game {
     const target = new THREE.Vector3();
     if (!this._raycaster.ray.intersectPlane(plane, target)) return null;
 
-    const hw = this._gameContainer.width / 2 - 0.5;
-    const hd = this._gameContainer.depth / 2 - 0.5;
+    // 과일 반지름만큼 여백을 두어 테두리가 벽 안쪽에 오도록 클램핑
+    const r = FRUIT_DATA[this._nextLevel].radius;
+    const hw = this._gameContainer.width / 2 - r;
+    const hd = this._gameContainer.depth / 2 - r;
     target.x = Math.max(-hw, Math.min(hw, target.x));
     target.z = Math.max(-hd, Math.min(hd, target.z));
     return target;
