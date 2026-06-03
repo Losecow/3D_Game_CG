@@ -335,7 +335,7 @@ export class Game {
     if (this._isGameOver || this._dropCooldown) return;
     if (this._dropMode !== 'click') return;
     if (this._isAnyModalOpen()) return;
-    if (event.target?.closest?.('#ui, #auth-panel, #signin-area, #game-over, #controls-hint')) return;
+    if (event.target?.closest?.('#ui, #auth-panel, #signin-area, #game-over, #controls-hint, #settings-modal, #leaderboard-modal, #nickname-modal')) return;
 
     if (this._splitView) {
       if (event.clientX <= window.innerWidth / 2) return;
