@@ -376,6 +376,130 @@ body {
   color: #88ddff;
 }
 
+/* 설정 모달 / Settings modal */
+#settings-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+#settings-modal.hidden { display: none; }
+
+#settings-box {
+  background: #16213e;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 32px 40px;
+  min-width: 320px;
+  max-width: 420px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+#settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#settings-header h2 {
+  font-size: 1.3rem;
+  color: #fff;
+}
+
+#settings-close {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+}
+
+#settings-close:hover { color: #fff; }
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.settings-label {
+  font-size: 0.9rem;
+  color: #ccc;
+  white-space: nowrap;
+}
+
+.settings-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+#volume-slider {
+  width: 110px;
+  accent-color: #4ade80;
+  cursor: pointer;
+}
+
+#volume-value {
+  font-size: 0.85rem;
+  color: #aaa;
+  min-width: 36px;
+  text-align: right;
+}
+
+.settings-toggle {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #aaa;
+  font-size: 0.85rem;
+  padding: 6px 18px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+  min-width: 60px;
+  text-align: center;
+}
+
+.settings-toggle.toggle-on {
+  background: rgba(100, 200, 255, 0.15);
+  border-color: rgba(100, 200, 255, 0.5);
+  color: #88ddff;
+}
+
+.drop-mode-group {
+  display: flex;
+  gap: 6px;
+}
+
+.mode-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #aaa;
+  font-size: 0.82rem;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.mode-btn.active {
+  background: rgba(74, 222, 128, 0.15);
+  border-color: rgba(74, 222, 128, 0.5);
+  color: #4ade80;
+}
+
+.mode-btn:hover:not(.active) { background: rgba(255, 255, 255, 0.12); }
+
 /* 게임 오버 액션 버튼 / Game over action buttons */
 #game-over-actions {
   display: flex;

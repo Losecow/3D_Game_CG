@@ -31,6 +31,8 @@ export class Game {
     this._watermelons = 0;
 
     this._splitView = false;
+    this._dropMode  = 'click'; // 'click' | 'space'
+    this._lastDropPos = null;
 
     this._raycaster = new THREE.Raycaster();
     this._sound = new Sound();
@@ -224,6 +226,11 @@ export class Game {
     this._sideCamera.updateProjectionMatrix();
   }
 
+  get isSplitView() { return this._splitView; }
+  get sound()       { return this._sound; }
+
+  setDropMode(mode) { this._dropMode = mode; }
+
   /** 분할 뷰 토글 / Toggle split view */
   toggleSplitView() {
     this._splitView = !this._splitView;
@@ -246,6 +253,16 @@ export class Game {
     window.addEventListener('mousemove', (e) => this._onMouseMove(e));
     window.addEventListener('click',     (e) => this._onMouseClick(e));
     window.addEventListener('resize',    ()  => this._onResize());
+
+    // 스페이스바 드롭 / Spacebar drop
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && !e.repeat) {
+        e.preventDefault();
+        if (this._dropMode === 'space' && !this._isGameOver && !this._dropCooldown && this._lastDropPos) {
+          this._dropFruit(this._lastDropPos);
+        }
+      }
+    });
 
     // 터치 지원 / Touch support
     window.addEventListener('touchmove', (e) => {
@@ -282,6 +299,7 @@ export class Game {
       this._dropGuide.visible = true;
       this._previewSphere.position.set(pos.x, spawnY, pos.z);
       this._previewSphere.visible = true;
+      this._lastDropPos = pos.clone();
       this._renderer.domElement.style.cursor = this._dropCooldown ? 'not-allowed' : 'crosshair';
       return;
     }
@@ -297,11 +315,13 @@ export class Game {
     this._dropGuide.visible = true;
     this._previewSphere.position.set(pos.x, spawnY, pos.z);
     this._previewSphere.visible = true;
+    this._lastDropPos = pos.clone();
     this._renderer.domElement.style.cursor = this._dropCooldown ? 'not-allowed' : 'crosshair';
   }
 
   _onMouseClick(event) {
     if (this._isGameOver || this._dropCooldown) return;
+    if (this._dropMode !== 'click') return;
 
     if (this._splitView) {
       if (event.clientX <= window.innerWidth / 2) return;

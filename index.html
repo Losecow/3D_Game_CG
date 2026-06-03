@@ -48,6 +48,7 @@
 
       <button id="leaderboard-btn">🏆 리더보드</button>
       <button id="splitview-btn">⊞ 분할 뷰</button>
+      <button id="settings-btn">⚙️ 설정</button>
     </div>
 
     <!-- 게임 오버 화면 -->
@@ -87,6 +88,37 @@
         </div>
         <div id="leaderboard-list">
           <div class="leaderboard-loading">불러오는 중...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 설정 모달 -->
+    <div id="settings-modal" class="hidden">
+      <div id="settings-box">
+        <div id="settings-header">
+          <h2>⚙️ 설정</h2>
+          <button id="settings-close">×</button>
+        </div>
+
+        <div class="settings-row">
+          <span class="settings-label">🔊 사운드 볼륨</span>
+          <div class="settings-right">
+            <input type="range" id="volume-slider" min="0" max="100" step="5" value="50" />
+            <span id="volume-value">50%</span>
+          </div>
+        </div>
+
+        <div class="settings-row">
+          <span class="settings-label">⊞ 분할 뷰</span>
+          <button id="settings-splitview-toggle" class="settings-toggle">OFF</button>
+        </div>
+
+        <div class="settings-row">
+          <span class="settings-label">🎯 드롭 방식</span>
+          <div class="drop-mode-group">
+            <button id="drop-mode-click" class="mode-btn active">클릭</button>
+            <button id="drop-mode-space" class="mode-btn">스페이스바</button>
+          </div>
         </div>
       </div>
     </div>

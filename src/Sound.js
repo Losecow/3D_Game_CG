@@ -1,7 +1,11 @@
 export class Sound {
   constructor() {
     this._ctx = null;
+    this._volume = 0.5;
   }
+
+  setVolume(v) { this._volume = Math.max(0, Math.min(1, v)); }
+  get volume()  { return this._volume; }
 
   _getCtx() {
     if (!this._ctx) this._ctx = new AudioContext();
@@ -23,7 +27,7 @@ export class Sound {
       osc.frequency.setValueAtTime(base, now);
       osc.frequency.exponentialRampToValueAtTime(base * 1.4, now + 0.08);
 
-      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.setValueAtTime(0.25 * this._volume, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
 
       osc.start(now);
@@ -44,7 +48,7 @@ export class Sound {
       osc.frequency.setValueAtTime(600, now);
       osc.frequency.exponentialRampToValueAtTime(200, now + 0.08);
 
-      gain.gain.setValueAtTime(0.08, now);
+      gain.gain.setValueAtTime(0.08 * this._volume, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
 
       osc.start(now);
