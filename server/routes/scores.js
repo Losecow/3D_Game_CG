@@ -12,12 +12,13 @@ router.get('/leaderboard', async (req, res) => {
           COALESCE(u.nickname, u.name) AS name,
           u.picture,
           s.score,
-          s.watermelons
+          s.watermelons,
+          s.created_at
         FROM scores s
         JOIN users u ON s.user_id = u.id
-        ORDER BY u.id, s.score DESC
+        ORDER BY u.id, s.score DESC, s.created_at ASC
       ) best
-      ORDER BY score DESC
+      ORDER BY score DESC, watermelons DESC, created_at ASC
       LIMIT 10
     `;
     res.json(rows);
