@@ -124,10 +124,32 @@
           </div>
         </div>
 
+        <div class="settings-row hidden" id="feedback-row">
+          <span class="settings-label">✉️ 피드백</span>
+          <button id="settings-feedback-btn" class="settings-toggle">남기기</button>
+        </div>
+
         <div class="settings-row settings-danger-row">
           <span class="settings-label">⏹ 게임 종료</span>
           <button id="settings-quit-btn" class="settings-danger-btn">종료</button>
         </div>
+      </div>
+    </div>
+
+    <!-- 피드백 모달 -->
+    <div id="feedback-modal" class="hidden">
+      <div id="feedback-box">
+        <div id="feedback-header">
+          <h2>✉️ 피드백</h2>
+          <button id="feedback-close">×</button>
+        </div>
+        <p id="feedback-desc">게임 개선을 위한 의견을 남겨주세요!</p>
+        <textarea id="feedback-input" maxlength="500" placeholder="피드백을 입력해주세요 (최대 500자)"></textarea>
+        <div id="feedback-footer">
+          <span id="feedback-char">0 / 500</span>
+          <button id="feedback-submit">보내기</button>
+        </div>
+        <p id="feedback-status" class="hidden"></p>
       </div>
     </div>
 

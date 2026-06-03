@@ -4,15 +4,17 @@ const LS = {
 };
 
 export class Settings {
-  constructor(game, sound) {
+  constructor(game, sound, auth) {
     this._game  = game;
     this._sound = sound;
+    this._auth  = auth;
 
     this._volume   = parseFloat(localStorage.getItem(LS.volume)   ?? '0.5');
     this._dropMode = localStorage.getItem(LS.dropMode) ?? 'click'; // 'click' | 'space'
 
     this._applyAll();
     this._initModal();
+    this._initFeedback();
   }
 
   // ─────── 외부에서 splitview 토글 시 호출 ───────
@@ -89,6 +91,74 @@ export class Settings {
 
   _close() {
     document.getElementById('settings-modal').classList.add('hidden');
+  }
+
+  // ─────── 피드백 ───────
+  _initFeedback() {
+    this._updateFeedbackRow();
+    this._auth?.on('login',  () => this._updateFeedbackRow());
+    this._auth?.on('logout', () => this._updateFeedbackRow());
+
+    document.getElementById('settings-feedback-btn').addEventListener('click', () => {
+      this._close();
+      this._openFeedback();
+    });
+
+    document.getElementById('feedback-close').addEventListener('click', () => this._closeFeedback());
+    document.getElementById('feedback-modal').addEventListener('click', (e) => {
+      if (e.target.id === 'feedback-modal') this._closeFeedback();
+    });
+
+    const input  = document.getElementById('feedback-input');
+    const charEl = document.getElementById('feedback-char');
+    input.addEventListener('input', () => {
+      charEl.textContent = `${input.value.length} / 500`;
+    });
+
+    document.getElementById('feedback-submit').addEventListener('click', () => this._submitFeedback());
+  }
+
+  _updateFeedbackRow() {
+    document.getElementById('feedback-row').classList.toggle('hidden', !this._auth?.isLoggedIn);
+  }
+
+  _openFeedback() {
+    document.getElementById('feedback-input').value = '';
+    document.getElementById('feedback-char').textContent = '0 / 500';
+    document.getElementById('feedback-status').classList.add('hidden');
+    document.getElementById('feedback-modal').classList.remove('hidden');
+  }
+
+  _closeFeedback() {
+    document.getElementById('feedback-modal').classList.add('hidden');
+  }
+
+  async _submitFeedback() {
+    const input     = document.getElementById('feedback-input');
+    const status    = document.getElementById('feedback-status');
+    const submitBtn = document.getElementById('feedback-submit');
+    const content   = input.value.trim();
+    if (!content) return;
+
+    submitBtn.disabled    = true;
+    submitBtn.textContent = '전송 중...';
+
+    const ok = await this._auth?.submitFeedback(content);
+
+    submitBtn.disabled    = false;
+    submitBtn.textContent = '보내기';
+    status.classList.remove('hidden');
+
+    if (ok) {
+      status.textContent = '✓ 피드백이 전송되었습니다. 감사합니다!';
+      status.className   = 'feedback-ok';
+      input.value = '';
+      document.getElementById('feedback-char').textContent = '0 / 500';
+      setTimeout(() => this._closeFeedback(), 2000);
+    } else {
+      status.textContent = '전송에 실패했습니다. 다시 시도해주세요.';
+      status.className   = 'feedback-err';
+    }
   }
 
   // ─────── 버튼 동기화 ───────

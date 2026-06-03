@@ -231,7 +231,7 @@ export class Game {
 
   /** 모달이 열려있으면 드롭 차단 / Block drop when any modal is open */
   _isAnyModalOpen() {
-    return ['settings-modal', 'leaderboard-modal', 'nickname-modal'].some(
+    return ['settings-modal', 'leaderboard-modal', 'nickname-modal', 'feedback-modal'].some(
       id => !document.getElementById(id).classList.contains('hidden')
     );
   }
@@ -335,7 +335,7 @@ export class Game {
     if (this._isGameOver || this._dropCooldown) return;
     if (this._dropMode !== 'click') return;
     if (this._isAnyModalOpen()) return;
-    if (event.target?.closest?.('#ui, #auth-panel, #signin-area, #game-over, #controls-hint, #settings-modal, #leaderboard-modal, #nickname-modal')) return;
+    if (event.target?.closest?.('#ui, #auth-panel, #signin-area, #game-over, #controls-hint, #settings-modal, #leaderboard-modal, #nickname-modal, #feedback-modal')) return;
 
     if (this._splitView) {
       if (event.clientX <= window.innerWidth / 2) return;

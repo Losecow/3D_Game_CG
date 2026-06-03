@@ -4,7 +4,7 @@ import { Settings } from './src/Settings.js';
 
 const auth     = new Auth();
 const game     = new Game(document.getElementById('canvas-container'), auth);
-const settings = new Settings(game, game.sound);
+const settings = new Settings(game, game.sound, auth);
 
 document.getElementById('splitview-btn').addEventListener('click', () => {
   settings.handleSplitViewToggle();

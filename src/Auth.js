@@ -89,6 +89,24 @@ export class Auth {
     return res.json();
   }
 
+  async submitFeedback(content) {
+    if (!this._token) return false;
+    try {
+      const res = await fetch(`${API_URL}/api/feedback`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this._token}`,
+        },
+        body: JSON.stringify({ content }),
+      });
+      if (res.status === 401) { this.logout(); return false; }
+      return res.ok;
+    } catch {
+      return false;
+    }
+  }
+
   // ───────────── private ─────────────
 
   async _validateToken() {
