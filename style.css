@@ -354,7 +354,8 @@ body {
 
 /* 리더보드 버튼 / Leaderboard button */
 #leaderboard-btn,
-#splitview-btn {
+#splitview-btn,
+#settings-btn {
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 12px;
