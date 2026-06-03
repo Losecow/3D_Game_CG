@@ -666,6 +666,18 @@ body {
 .submit-ok   { color: #4ade80; }
 .submit-hint { color: #aaa; }
 
+#gameover-watermelon {
+  margin: 8px 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
+}
+
+#gameover-wm-game  { color: #ddd; }
+#gameover-wm-total { color: #4ade80; font-weight: bold; }
+#gameover-wm-hint  { color: #aaa; font-size: 0.8rem; }
+
 /* 리더보드 모달 / Leaderboard modal */
 #leaderboard-modal {
   position: fixed;

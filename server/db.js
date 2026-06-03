@@ -16,6 +16,7 @@ async function initDB() {
   `;
   // 기존 DB에 nickname 컬럼 없으면 추가
   await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS nickname VARCHAR(20)`;
+  await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS total_watermelons INTEGER DEFAULT 0`;
   await sql`ALTER TABLE scores ADD COLUMN IF NOT EXISTS watermelons INTEGER DEFAULT 0`;
   await sql`
     CREATE TABLE IF NOT EXISTS feedback (

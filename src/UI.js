@@ -16,6 +16,9 @@ export class UI {
     this._previewCanvas = document.getElementById('next-fruit-preview');
     this._previewCtx    = this._previewCanvas.getContext('2d');
     this._submitStatus  = document.getElementById('score-submit-status');
+    this._wmGameEl      = document.getElementById('gameover-wm-game');
+    this._wmTotalEl     = document.getElementById('gameover-wm-total');
+    this._wmHintEl      = document.getElementById('gameover-wm-hint');
 
     this._best = parseInt(localStorage.getItem('suika3d_best') || '0', 10);
     this._bestEl.textContent = this._best;
@@ -69,7 +72,7 @@ export class UI {
 
   // ─────────────────────── 게임 오버 ───────────────────────
 
-  showGameOver(score, submitted, onRestart) {
+  showGameOver(score, submitted, watermelons, totalWatermelons, onRestart) {
     this._finalEl.textContent = score;
     this._finalBestEl.textContent = this._best;
     this._newRecordEl.classList.toggle('hidden', !this._newBestThisGame);
@@ -77,12 +80,25 @@ export class UI {
     if (submitted === true) {
       this._submitStatus.textContent = '✓ 리더보드에 등록되었습니다';
       this._submitStatus.className = 'submit-ok';
-    } else if (submitted === false && !this._auth?.isLoggedIn) {
+    } else if (submitted === null) {
       this._submitStatus.textContent = '로그인하면 리더보드에 등록됩니다';
       this._submitStatus.className = 'submit-hint';
     } else {
       this._submitStatus.textContent = '';
       this._submitStatus.className = '';
+    }
+
+    this._wmGameEl.textContent = `이번 게임 수박 🍉 ${watermelons}개`;
+    if (totalWatermelons !== null) {
+      this._wmTotalEl.textContent = `누적 수박 🍉 ${totalWatermelons}개`;
+      this._wmTotalEl.classList.remove('hidden');
+      this._wmHintEl.classList.add('hidden');
+    } else if (submitted === null) {
+      this._wmTotalEl.classList.add('hidden');
+      this._wmHintEl.classList.remove('hidden');
+    } else {
+      this._wmTotalEl.classList.add('hidden');
+      this._wmHintEl.classList.add('hidden');
     }
 
     this._gameOverEl.classList.remove('hidden');

@@ -36,7 +36,12 @@ router.post('/scores', authMiddleware, async (req, res) => {
     }
     const wm = Number.isInteger(watermelons) && watermelons >= 0 ? watermelons : 0;
     await sql`INSERT INTO scores (user_id, score, watermelons) VALUES (${req.userId}, ${score}, ${wm})`;
-    res.json({ ok: true });
+    const [{ total_watermelons }] = await sql`
+      UPDATE users SET total_watermelons = total_watermelons + ${wm}
+      WHERE id = ${req.userId}
+      RETURNING total_watermelons
+    `;
+    res.json({ ok: true, total_watermelons });
   } catch (err) {
     console.error('Score submit error:', err.message);
     res.status(500).json({ error: 'Server error' });

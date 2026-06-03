@@ -500,11 +500,14 @@ export class Game {
     this._dropGuide.visible = false;
     this._previewSphere.visible = false;
 
-    const submitted = this._auth?.isLoggedIn
+    const result = this._auth?.isLoggedIn
       ? await this._auth.submitScore(this._score, this._watermelons)
       : null;
 
-    this._ui.showGameOver(this._score, submitted, () => this._restart());
+    const submitted = result ? result.ok : null;
+    const totalWatermelons = result?.totalWatermelons ?? null;
+
+    this._ui.showGameOver(this._score, submitted, this._watermelons, totalWatermelons, () => this._restart());
   }
 
   /** 게임 재시작 / Restart the game */

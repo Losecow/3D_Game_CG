@@ -45,7 +45,7 @@ export class Auth {
   }
 
   async submitScore(score, watermelons = 0) {
-    if (!this._token) return false;
+    if (!this._token) return null;
     try {
       const res = await fetch(`${API_URL}/api/scores`, {
         method: 'POST',
@@ -55,10 +55,12 @@ export class Auth {
         },
         body: JSON.stringify({ score, watermelons }),
       });
-      if (res.status === 401) { this.logout(); return false; }
-      return res.ok;
+      if (res.status === 401) { this.logout(); return null; }
+      if (!res.ok) return { ok: false, totalWatermelons: null };
+      const data = await res.json();
+      return { ok: true, totalWatermelons: data.total_watermelons ?? null };
     } catch {
-      return false;
+      return { ok: false, totalWatermelons: null };
     }
   }
 
