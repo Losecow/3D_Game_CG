@@ -41,7 +41,7 @@ export class Container {
     const wallMat = new THREE.MeshStandardMaterial({
       color: 0x88ccff,
       transparent: true,
-      opacity: 0.12,
+      opacity: 0.30,
       side: THREE.DoubleSide,
       depthWrite: false,
     });
