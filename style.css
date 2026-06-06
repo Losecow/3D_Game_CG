@@ -773,6 +773,12 @@ body {
   color: #fff;
 }
 
+.lb-wm-game {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #aaa;
+}
+
 .lb-watermelon {
   font-size: 0.85rem;
   color: #98FF55;

@@ -7,12 +7,13 @@ const router = express.Router();
 router.get('/leaderboard', async (req, res) => {
   try {
     const rows = await sql`
-      SELECT name, picture, score, watermelons FROM (
+      SELECT name, picture, score, watermelons, total_watermelons FROM (
         SELECT DISTINCT ON (u.id)
           COALESCE(u.nickname, u.name) AS name,
           u.picture,
           s.score,
           s.watermelons,
+          u.total_watermelons,
           s.created_at
         FROM scores s
         JOIN users u ON s.user_id = u.id
