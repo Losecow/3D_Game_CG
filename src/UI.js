@@ -227,7 +227,7 @@ export class UI {
           <img class="lb-avatar" src="${row.picture || ''}" alt="" />
           <span class="lb-name">${row.name || '익명'}</span>
           <span class="lb-score">${Number(row.score).toLocaleString()} <span class="lb-wm-game">(🍉 ${row.watermelons ?? 0})</span></span>
-          <span class="lb-watermelon">누적 🍉 ${row.total_watermelons ?? 0}</span>
+          <span class="lb-watermelon">🍉 ${row.total_watermelons ?? 0}</span>
         </div>
       `).join('');
     } catch {
