@@ -28,7 +28,7 @@ export class Game {
     // Timer for game-over detection (ms above danger line)
     this._dangerTimer = 0;
     this._dangerThreshold = 2500; // 2.5초 이상 초과 시 게임 오버
-    this._mergeGrace = 0;         // 합체 후 위험 판정 유예 시간 (ms)
+    this._mergeGrace = 0;         // 합체 후 위험 판정 유예 시간 (ms), 3초
     this._watermelons = 0;
 
     this._splitView = false;
@@ -465,7 +465,7 @@ export class Game {
   _addScore(points) {
     this._score += points;
     this._ui.setScore(this._score);
-    this._mergeGrace = 5000;
+    this._mergeGrace = 3000;
   }
 
   _randomLevel() {
@@ -487,11 +487,17 @@ export class Game {
 
     const dangerY = this._gameContainer.dangerLineY;
     const now = performance.now();
-    const hasAbove = this._fruits.some(
+    const aboveFruits = this._fruits.filter(
       (f) => !f.isMerging && f.body.position.y > dangerY && (now - f.spawnTime) > 1500
     );
 
-    if (hasAbove) {
+    // 4개 이상 위험선 초과 시 즉시 게임 오버
+    if (aboveFruits.length >= 4) {
+      this._triggerGameOver();
+      return;
+    }
+
+    if (aboveFruits.length > 0) {
       this._dangerTimer += dt * 1000;
       if (this._dangerTimer >= this._dangerThreshold) {
         this._triggerGameOver();
