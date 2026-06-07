@@ -19,7 +19,7 @@ export const FRUIT_DATA = [
   { level: 7, name: '복숭아',    nameEn: 'Peach',       radius: 2.65, color: '#FFAEB9', score: 36, texture: 'peach.png'      },
   { level: 8, name: '파인애플',  nameEn: 'Pineapple',   radius: 3.10, color: '#FFD700', score: 45, texture: 'pineapple.png'  },
   { level: 9, name: '멜론',      nameEn: 'Melon',       radius: 3.70, color: '#98FF55', score: 55, texture: 'melon.png'      },
-  { level: 10, name: '수박',     nameEn: 'Watermelon',  radius: 4.30, color: '#1E8B00', score: 66, texture: 'watermelon.png' },
+  { level: 10, name: '수박',     nameEn: 'Watermelon',  radius: 4.09, color: '#1E8B00', score: 66, texture: 'watermelon.png' },
 ];
 
 /** 드롭 가능한 최대 레벨 (처음에 나올 수 있는 최고 과일) / Max droppable level */
