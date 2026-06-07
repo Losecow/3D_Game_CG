@@ -161,10 +161,13 @@ export class Game {
   _initPreviewSphere() {
     const data = FRUIT_DATA[this._currentLevel];
     const geo = new THREE.SphereGeometry(data.radius, 24, 16);
+    const tex = new THREE.TextureLoader().load(`/textures/${data.texture}`);
     const mat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(data.color),
+      map: tex,
+      roughness: 0.2,
+      metalness: 0.0,
       transparent: true,
-      opacity: 0.4,
+      opacity: 0.6,
     });
     this._previewSphere = new THREE.Mesh(geo, mat);
     this._previewSphere.visible = false;
