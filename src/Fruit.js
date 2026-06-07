@@ -54,8 +54,8 @@ export class Fruit {
 
     const mat = new THREE.MeshStandardMaterial({
       map: _texCache.get(this.level),
-      roughness: 0.7,
-      metalness: 0.05,
+      roughness: 0.2,
+      metalness: 0.0,
     });
 
     this.mesh = new THREE.Mesh(geo, mat);

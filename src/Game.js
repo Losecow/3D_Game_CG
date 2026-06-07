@@ -116,7 +116,7 @@ export class Game {
   /** 조명 설정 / Set up lights */
   _initLights() {
     // 전체 환경광 / Ambient light
-    const ambient = new THREE.AmbientLight(0xffffff, 0.6);
+    const ambient = new THREE.AmbientLight(0xffffff, 1.2);
     this._scene.add(ambient);
 
     // 주 방향광 (그림자 생성) / Main directional light (casts shadows)
