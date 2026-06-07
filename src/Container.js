@@ -83,6 +83,7 @@ export class Container {
     const floorGeo = new THREE.BoxGeometry(w, t, d);
     const floorMesh = new THREE.Mesh(floorGeo, floorMat);
     floorMesh.position.set(0, -t / 2, 0);
+    floorMesh.receiveShadow = true;
     scene.add(floorMesh);
   }
 
