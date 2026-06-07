@@ -50,7 +50,11 @@ export class Container {
     const edgeMat = new THREE.LineBasicMaterial({ color: 0x88ccff, opacity: 0.5, transparent: true });
 
     // 바닥 재질 / Floor material
-    const floorMat = new THREE.MeshStandardMaterial({ color: 0x334466 });
+    const floorTex = new THREE.TextureLoader().load('/textures/basket_floor.png');
+    floorTex.wrapS = THREE.RepeatWrapping;
+    floorTex.wrapT = THREE.RepeatWrapping;
+    floorTex.repeat.set(3, 3);
+    const floorMat = new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.8 });
 
     const panels = [
       // [너비, 높이, 위치 x, y, z, 회전 y]
