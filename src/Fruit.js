@@ -63,10 +63,6 @@ export class Fruit {
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
 
-    // 과일 이름 스프라이트 (작은 텍스트 레이블)
-    // Fruit name sprite (small text label)
-    this.mesh.add(this._makeLabel(name, radius));
-
     this.scene.add(this.mesh);
   }
 
