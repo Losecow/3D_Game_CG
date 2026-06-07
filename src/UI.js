@@ -19,6 +19,8 @@ export class UI {
     this._wmGameEl      = document.getElementById('gameover-wm-game');
     this._wmTotalEl     = document.getElementById('gameover-wm-total');
     this._wmHintEl      = document.getElementById('gameover-wm-hint');
+    this._inspectBanner = document.getElementById('inspect-banner');
+    this._inspectLabel  = document.getElementById('inspect-score-label');
 
     this._best = parseInt(localStorage.getItem('suika3d_best') || '0', 10);
     this._bestEl.textContent = this._best;
@@ -103,19 +105,45 @@ export class UI {
 
     this._gameOverEl.classList.remove('hidden');
 
+    const doRestart = () => {
+      this._gameOverEl.classList.add('hidden');
+      this._inspectBanner.classList.add('hidden');
+      this._newBestThisGame = false;
+      onRestart();
+    };
+
     const newBtn = this._restartBtn.cloneNode(true);
     this._restartBtn.replaceWith(newBtn);
     this._restartBtn = newBtn;
-    this._restartBtn.addEventListener('click', () => {
-      this._gameOverEl.classList.add('hidden');
-      this._newBestThisGame = false;
-      onRestart();
-    });
+    this._restartBtn.addEventListener('click', doRestart);
 
     const lbBtn = document.getElementById('gameover-leaderboard-btn');
     const newLbBtn = lbBtn.cloneNode(true);
     lbBtn.replaceWith(newLbBtn);
     newLbBtn.addEventListener('click', () => this._openLeaderboard());
+
+    // 현재 상태 보기 버튼
+    const inspectBtn = document.getElementById('inspect-btn');
+    const newInspectBtn = inspectBtn.cloneNode(true);
+    inspectBtn.replaceWith(newInspectBtn);
+    newInspectBtn.addEventListener('click', () => {
+      this._gameOverEl.classList.add('hidden');
+      this._inspectLabel.textContent = `GAME OVER · ${score.toLocaleString()}점`;
+      this._inspectBanner.classList.remove('hidden');
+    });
+
+    const backBtn = document.getElementById('inspect-back-btn');
+    const newBackBtn = backBtn.cloneNode(true);
+    backBtn.replaceWith(newBackBtn);
+    newBackBtn.addEventListener('click', () => {
+      this._inspectBanner.classList.add('hidden');
+      this._gameOverEl.classList.remove('hidden');
+    });
+
+    const inspectRestartBtn = document.getElementById('inspect-restart-btn');
+    const newInspectRestartBtn = inspectRestartBtn.cloneNode(true);
+    inspectRestartBtn.replaceWith(newInspectRestartBtn);
+    newInspectRestartBtn.addEventListener('click', doRestart);
   }
 
   // ─────────────────────── 인증 UI ───────────────────────

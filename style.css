@@ -113,6 +113,49 @@ body {
   display: none;
 }
 
+#inspect-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+#inspect-banner.hidden { display: none; }
+
+#inspect-score-label {
+  font-weight: 700;
+  color: #ff6b6b;
+}
+
+#inspect-actions {
+  display: flex;
+  gap: 8px;
+}
+
+#inspect-actions button {
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background 0.15s;
+}
+
+#inspect-actions button:hover {
+  background: rgba(255,255,255,0.25);
+}
+
 #game-over-box {
   background: #16213e;
   border: 2px solid rgba(255, 100, 100, 0.6);
