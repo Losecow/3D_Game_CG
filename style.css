@@ -699,6 +699,16 @@ body {
 
 #gameover-leaderboard-btn:hover { background: rgba(255, 255, 255, 0.2); }
 
+#gameover-feedback-link {
+  margin-top: 14px;
+  font-size: 0.8rem;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.15s;
+}
+
+#gameover-feedback-link:hover { color: #ccc; }
+
 #inspect-btn {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;

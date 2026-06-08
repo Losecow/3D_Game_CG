@@ -19,8 +19,9 @@ export class UI {
     this._wmGameEl      = document.getElementById('gameover-wm-game');
     this._wmTotalEl     = document.getElementById('gameover-wm-total');
     this._wmHintEl      = document.getElementById('gameover-wm-hint');
-    this._inspectBanner = document.getElementById('inspect-banner');
-    this._inspectLabel  = document.getElementById('inspect-score-label');
+    this._inspectBanner    = document.getElementById('inspect-banner');
+    this._inspectLabel     = document.getElementById('inspect-score-label');
+    this._gameoverFeedback = document.getElementById('gameover-feedback-link');
 
     this._best = parseInt(localStorage.getItem('suika3d_best') || '0', 10);
     this._bestEl.textContent = this._best;
@@ -121,6 +122,24 @@ export class UI {
     const newLbBtn = lbBtn.cloneNode(true);
     lbBtn.replaceWith(newLbBtn);
     newLbBtn.addEventListener('click', () => this._openLeaderboard());
+
+    // 피드백 링크 (로그인 시만 표시)
+    const feedbackLink = document.getElementById('gameover-feedback-link');
+    const newFeedbackLink = feedbackLink.cloneNode(true);
+    feedbackLink.replaceWith(newFeedbackLink);
+    if (this._auth?.isLoggedIn) {
+      newFeedbackLink.classList.remove('hidden');
+      newFeedbackLink.addEventListener('click', () => {
+        this._gameOverEl.classList.add('hidden');
+        document.getElementById('feedback-input').value = '';
+        document.getElementById('feedback-char').textContent = '0 / 500';
+        document.getElementById('feedback-status').classList.add('hidden');
+        document.getElementById('feedback-modal').classList.remove('hidden');
+      });
+    } else {
+      newFeedbackLink.classList.add('hidden');
+    }
+    this._gameoverFeedback = newFeedbackLink;
 
     // 현재 상태 보기 버튼
     const inspectBtn = document.getElementById('inspect-btn');
