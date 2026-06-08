@@ -19,6 +19,15 @@ async function initDB() {
   await sql`ALTER TABLE users ADD COLUMN IF NOT EXISTS total_watermelons INTEGER DEFAULT 0`;
   await sql`ALTER TABLE scores ADD COLUMN IF NOT EXISTS watermelons INTEGER DEFAULT 0`;
   await sql`
+    CREATE TABLE IF NOT EXISTS shop_purchases (
+      id         SERIAL PRIMARY KEY,
+      user_id    INTEGER REFERENCES users(id) ON DELETE CASCADE,
+      item_id    VARCHAR(50) NOT NULL,
+      cost       INTEGER NOT NULL,
+      created_at TIMESTAMP DEFAULT NOW()
+    )
+  `;
+  await sql`
     CREATE TABLE IF NOT EXISTS feedback (
       id         SERIAL PRIMARY KEY,
       user_id    INTEGER REFERENCES users(id) ON DELETE CASCADE,

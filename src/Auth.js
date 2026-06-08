@@ -91,6 +91,35 @@ export class Auth {
     return res.json();
   }
 
+  async fetchShopItems() {
+    if (!this._token) return null;
+    try {
+      const res = await fetch(`${API_URL}/api/shop/items`, {
+        headers: { Authorization: `Bearer ${this._token}` },
+      });
+      if (res.status === 401) { this.logout(); return null; }
+      return res.json();
+    } catch { return null; }
+  }
+
+  async purchase(itemId) {
+    if (!this._token) return null;
+    try {
+      const res = await fetch(`${API_URL}/api/shop/purchase`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this._token}` },
+        body: JSON.stringify({ item_id: itemId }),
+      });
+      if (res.status === 401) { this.logout(); return null; }
+      const data = await res.json();
+      if (data.ok && this._user) {
+        this._user.total_watermelons = data.total_watermelons;
+        localStorage.setItem('fruit_user', JSON.stringify(this._user));
+      }
+      return data;
+    } catch { return null; }
+  }
+
   async submitFeedback(content) {
     if (!this._token) return false;
     try {

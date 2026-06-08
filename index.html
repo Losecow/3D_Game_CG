@@ -50,6 +50,7 @@
         </div>
       </div>
 
+      <button id="shop-btn">🍉 상점</button>
       <button id="leaderboard-btn">🏆 리더보드</button>
       <button id="splitview-btn">⊞ 분할 뷰</button>
     </div>
@@ -76,12 +77,31 @@
       </div>
     </div>
 
+    <!-- 삭제 모드 배너 -->
+    <div id="delete-mode-banner" class="hidden">
+      <span>🗑️ 삭제할 과일을 클릭하세요</span>
+      <button id="delete-mode-cancel">취소 (ESC)</button>
+    </div>
+
     <!-- 검사 모드 배너 -->
     <div id="inspect-banner" class="hidden">
       <span id="inspect-score-label"></span>
       <div id="inspect-actions">
         <button id="inspect-back-btn">결과 보기</button>
         <button id="inspect-restart-btn">다시 시작</button>
+      </div>
+    </div>
+
+    <!-- 상점 모달 -->
+    <div id="shop-modal" class="hidden">
+      <div id="shop-box">
+        <div id="shop-header">
+          <h2>🍉 상점</h2>
+          <button id="shop-close">×</button>
+        </div>
+        <div id="shop-balance">보유 수박: <span id="shop-wm-count">0</span> 🍉</div>
+        <div id="shop-items"></div>
+        <p id="shop-status"></p>
       </div>
     </div>
 

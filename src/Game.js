@@ -35,6 +35,10 @@ export class Game {
     this._dropMode  = 'click'; // 'click' | 'space'
     this._lastDropPos = null;
 
+    this._shakeUsed   = false;   // 게임당 1회
+    this._deleteMode  = false;   // 과일 삭제 모드
+    this._onDeleteFruit = null;
+
     this._raycaster = new THREE.Raycaster();
     this._sound = new Sound();
 
@@ -216,17 +220,68 @@ export class Game {
     this._topCamera.updateProjectionMatrix();
   }
 
-  get isSplitView() { return this._splitView; }
-  get sound()       { return this._sound; }
+  get isSplitView()  { return this._splitView; }
+  get sound()        { return this._sound; }
+  get shakeUsed()    { return this._shakeUsed; }
+  get isGameOver()   { return this._isGameOver; }
 
   /** 모달이 열려있으면 드롭 차단 / Block drop when any modal is open */
   _isAnyModalOpen() {
-    return ['settings-modal', 'leaderboard-modal', 'nickname-modal', 'feedback-modal'].some(
+    return ['settings-modal', 'leaderboard-modal', 'nickname-modal', 'feedback-modal', 'shop-modal'].some(
       id => !document.getElementById(id).classList.contains('hidden')
     );
   }
 
   setDropMode(mode) { this._dropMode = mode; }
+
+  shake() {
+    if (this._shakeUsed || this._isGameOver) return;
+    this._shakeUsed = true;
+    const strength = 15;
+    this._fruits.forEach(f => {
+      const impulse = new CANNON.Vec3(
+        (Math.random() - 0.5) * strength,
+        Math.random() * strength * 0.5,
+        (Math.random() - 0.5) * strength
+      );
+      f.body.applyImpulse(impulse);
+      f.body.wakeUp();
+    });
+  }
+
+  enterDeleteMode(onDone) {
+    if (this._isGameOver) return;
+    this._deleteMode = true;
+    this._onDeleteFruit = onDone ?? null;
+  }
+
+  exitDeleteMode() {
+    this._deleteMode = false;
+    const cb = this._onDeleteFruit;
+    this._onDeleteFruit = null;
+    cb?.();
+  }
+
+  _tryDeleteFruit(event) {
+    if (this._isGameOver) { this.exitDeleteMode(); return; }
+    if (this._splitView && event.clientX < this._splitLeft) return;
+
+    const normalizedX = this._splitView
+      ? ((event.clientX - this._splitLeft) / (window.innerWidth - this._splitLeft)) * 2 - 1
+      : (event.clientX / window.innerWidth) * 2 - 1;
+    const normalizedY = -(event.clientY / window.innerHeight) * 2 + 1;
+
+    this._raycaster.setFromCamera(new THREE.Vector2(normalizedX, normalizedY), this._camera);
+    const hits = this._raycaster.intersectObjects(this._fruits.map(f => f.mesh), false);
+    if (hits.length === 0) return;
+
+    const idx = this._fruits.findIndex(f => f.mesh === hits[0].object);
+    if (idx === -1) return;
+
+    const fruit = this._fruits.splice(idx, 1)[0];
+    fruit.destroy();
+    this.exitDeleteMode();
+  }
 
   /** 분할 뷰 토글 / Toggle split view */
   toggleSplitView() {
@@ -257,6 +312,11 @@ export class Game {
     });
     this._renderer.domElement.addEventListener('mouseleave', () => {
       if (this._splitView) this._controls.enabled = true;
+    });
+
+    // ESC: 삭제 모드 취소
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Escape' && this._deleteMode) this.exitDeleteMode();
     });
 
     // 스페이스바 드롭 / Spacebar drop
@@ -330,6 +390,10 @@ export class Game {
   }
 
   _onMouseClick(event) {
+    if (this._deleteMode) {
+      this._tryDeleteFruit(event);
+      return;
+    }
     if (this._isGameOver || this._dropCooldown) return;
     if (this._dropMode !== 'click') return;
     if (this._isAnyModalOpen()) return;
@@ -514,6 +578,7 @@ export class Game {
 
   async _triggerGameOver() {
     this._isGameOver = true;
+    if (this._deleteMode) this.exitDeleteMode();
     this._dropGuide.visible = false;
     this._previewSphere.visible = false;
 
@@ -539,6 +604,8 @@ export class Game {
     this._dangerTimer = 0;
     this._mergeGrace = 0;
     this._dropCooldown = false;
+    this._shakeUsed = false;
+    this.exitDeleteMode();
 
     this._currentLevel = this._randomLevel();
     this._nextLevel = this._randomLevel();

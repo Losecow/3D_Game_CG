@@ -400,6 +400,7 @@ body {
 
 #settings-btn:hover { background: rgba(255, 255, 255, 0.1); }
 
+#shop-btn,
 #leaderboard-btn,
 #splitview-btn {
   background: rgba(0, 0, 0, 0.6);
@@ -414,8 +415,14 @@ body {
   transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
+#shop-btn:hover,
 #leaderboard-btn:hover,
 #splitview-btn:hover { background: rgba(255, 255, 255, 0.1); }
+
+#shop-btn {
+  border-color: rgba(150, 255, 80, 0.25);
+  color: #b8f080;
+}
 
 #splitview-btn.active {
   background: rgba(100, 200, 255, 0.15);
@@ -858,6 +865,170 @@ body {
   font-size: 0.85rem;
   color: #98FF55;
   white-space: nowrap;
+}
+
+/* 삭제 모드 배너 / Delete mode banner */
+#delete-mode-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 95;
+  background: rgba(220, 60, 60, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+#delete-mode-banner.hidden { display: none; }
+
+#delete-mode-cancel {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fff;
+  padding: 5px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: background 0.15s;
+}
+
+#delete-mode-cancel:hover { background: rgba(255, 255, 255, 0.35); }
+
+/* 상점 모달 / Shop modal */
+#shop-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+#shop-modal.hidden { display: none; }
+
+#shop-box {
+  background: #16213e;
+  border: 2px solid rgba(150, 255, 80, 0.25);
+  border-radius: 20px;
+  padding: 32px 40px;
+  min-width: 320px;
+  max-width: 420px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#shop-header h2 {
+  font-size: 1.3rem;
+  color: #b8f080;
+}
+
+#shop-close {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+}
+
+#shop-close:hover { color: #fff; }
+
+#shop-balance {
+  font-size: 0.9rem;
+  color: #ccc;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 8px 14px;
+}
+
+#shop-balance span {
+  color: #b8f080;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+#shop-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shop-loading {
+  color: #aaa;
+  text-align: center;
+  padding: 16px 0;
+  font-size: 0.9rem;
+}
+
+.shop-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.shop-item-info {
+  flex: 1;
+}
+
+.shop-item-name {
+  font-size: 0.95rem;
+  color: #eee;
+  font-weight: 600;
+  margin-bottom: 3px;
+}
+
+.shop-item-desc {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.shop-item-btn {
+  background: rgba(150, 255, 80, 0.15);
+  border: 1px solid rgba(150, 255, 80, 0.4);
+  border-radius: 8px;
+  color: #b8f080;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+
+.shop-item-btn:hover:not(:disabled) { background: rgba(150, 255, 80, 0.3); }
+
+.shop-item-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+#shop-status {
+  font-size: 0.85rem;
+  text-align: center;
+  color: #ff8080;
+  min-height: 18px;
+  margin: 0;
 }
 
 /* 반응형 / Responsive */
