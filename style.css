@@ -699,15 +699,23 @@ body {
 
 #gameover-leaderboard-btn:hover { background: rgba(255, 255, 255, 0.2); }
 
+@keyframes feedback-pulse {
+  0%, 100% { color: #888; }
+  50%       { color: #ccc; }
+}
+
 #gameover-feedback-link {
   margin-top: 14px;
   font-size: 0.8rem;
   color: #888;
   cursor: pointer;
-  transition: color 0.15s;
+  animation: feedback-pulse 2s ease-in-out infinite;
 }
 
-#gameover-feedback-link:hover { color: #ccc; }
+#gameover-feedback-link:hover {
+  animation: none;
+  color: #fff;
+}
 
 #inspect-btn {
   background: rgba(255, 255, 255, 0.1);
