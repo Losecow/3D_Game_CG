@@ -45,7 +45,8 @@
 
 | 입력 | 동작 |
 |------|------|
-| `클릭` | 과일 드롭 |
+| `클릭` | 과일 드롭 (클릭 모드) |
+| `스페이스바` | 과일 드롭 (스페이스 모드, 설정에서 전환) |
 | `마우스 드래그` | 카메라 회전 |
 | `스크롤` | 줌 인/아웃 |
 | `터치` | 모바일 지원 |
@@ -142,13 +143,14 @@ npm run dev
 
 ```sql
 CREATE TABLE users (
-  id         SERIAL PRIMARY KEY,
-  google_id  VARCHAR(255) UNIQUE NOT NULL,
-  email      VARCHAR(255) NOT NULL,
-  name       VARCHAR(255),
-  nickname   VARCHAR(20),
-  picture    VARCHAR(500),
-  created_at TIMESTAMP DEFAULT NOW()
+  id                 SERIAL PRIMARY KEY,
+  google_id          VARCHAR(255) UNIQUE NOT NULL,
+  email              VARCHAR(255) NOT NULL,
+  name               VARCHAR(255),
+  nickname           VARCHAR(20),
+  picture            VARCHAR(500),
+  total_watermelons  INTEGER DEFAULT 0,
+  created_at         TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE scores (
@@ -157,6 +159,13 @@ CREATE TABLE scores (
   score       INTEGER NOT NULL,
   watermelons INTEGER DEFAULT 0,
   created_at  TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE feedback (
+  id         SERIAL PRIMARY KEY,
+  user_id    INTEGER REFERENCES users(id) ON DELETE CASCADE,
+  content    TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
 );
 ```
 
@@ -174,19 +183,28 @@ CREATE TABLE scores (
 │   ├── World.js       # 물리 세계
 │   ├── UI.js          # UI 관리
 │   ├── Auth.js        # 인증 모듈
+│   ├── Settings.js    # 설정 모달
 │   ├── Sound.js       # 사운드
-│   └── FruitData.js   # 과일 데이터 상수
+│   ├── FruitData.js   # 과일 데이터 상수
+│   └── admin.js       # 관리자 페이지 스크립트
 ├── server/
 │   ├── index.js       # Express 서버
 │   ├── db.js          # DB 연결 & 마이그레이션
 │   ├── routes/
 │   │   ├── auth.js    # 구글 로그인 API
-│   │   └── scores.js  # 점수 & 리더보드 API
+│   │   ├── scores.js  # 점수 & 리더보드 API
+│   │   ├── feedback.js # 피드백 API
+│   │   └── admin.js   # 관리자 API
 │   └── middleware/
-│       └── auth.js    # JWT 인증 미들웨어
+│       ├── auth.js    # JWT 인증 미들웨어
+│       └── adminAuth.js # 관리자 인증 미들웨어
+├── public/
+│   └── textures/      # 과일 & 바닥 텍스쳐
 ├── index.html
+├── admin.html         # 관리자 페이지
 ├── main.js
 ├── style.css
+├── vite.config.js
 └── render.yaml        # Render 배포 설정
 ```
 
@@ -198,14 +216,20 @@ CREATE TABLE scores (
 - 게임오버 후 현재 상태 보기 (inspect 모드)
 - 합체 발생 시 게임오버 판정 유예 / 위험선 4개 초과 즉시 게임오버
 - 바구니 바닥 텍스쳐 적용 및 과일 그림자 추가
-- 과일 텍스쳐 캔디 스타일로 교체
-- 리더보드 수박 수 분리 표시 (게임별 / 누적)
-- 유저별 누적 수박 개수 DB 저장
-- 관리자 대시보드 추가 (`/admin`)
-- 피드백 기능 추가 (설정 모달 내)
-- 분할 뷰 레이아웃 개편 (탑다운 좌 60% / 원근 우 40%)
-- 설정 모달 추가 (볼륨, 드롭 방식, 분할 뷰)
-- 리더보드 동점 처리 타이브레이커 추가
+- 과일 텍스쳐 캔디 스타일로 교체, 드롭 미리보기 구체도 텍스쳐 통일
+- 리더보드 수박 수 분리 표시 (게임별 / 누적) 및 동점 타이브레이커 추가
+- 유저별 누적 수박 개수 DB 저장 및 게임오버 화면 표시
+- 관리자 대시보드 추가 (`/admin`) — 통계·유저·점수·피드백 조회
+- 피드백 기능 추가 (설정 모달 내, 로그인 전용)
+- 분할 뷰 레이아웃 개편 (탑다운 좌 60% / 원근 우 40%, OrbitControls 복원)
+- 설정 모달 추가 (볼륨, 드롭 방식 클릭/스페이스, 분할 뷰 토글)
+
+### 2026.05
+- 현재·다음 과일 동시 UI 표시
+- 구글 로그인 / 닉네임 설정 / 리더보드 / Neon DB 연동
+- 토큰 만료 시 자동 로그아웃 처리
+- 과일 드롭 위치 벽 안쪽 클램핑 (반지름 기준)
+- 배경 흰색으로 변경
 
 ---
 
