@@ -963,6 +963,27 @@ body {
   color: #ccc;
 }
 
+#camera-next-btn {
+  width: 100%;
+  margin-top: 12px;
+  background: #4ade80;
+  border: none;
+  border-radius: 10px;
+  color: #000;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 11px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#camera-next-btn:hover:not(:disabled) { background: #22c55e; }
+
+#camera-next-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 #camera-step-header {
   display: flex;
   align-items: center;

@@ -15,9 +15,11 @@ export class CameraModal {
     this._fruitGrid  = document.getElementById('camera-fruit-grid');
     this._noCam      = document.getElementById('camera-no-cam');
     this._selectedLabel = document.getElementById('camera-selected-name');
+    this._nextBtn    = document.getElementById('camera-next-btn');
 
     document.getElementById('camera-btn').addEventListener('click', () => this.open());
     document.getElementById('camera-close').addEventListener('click', () => this.close());
+    document.getElementById('camera-next-btn').addEventListener('click', () => this._goStep2());
     document.getElementById('camera-back-btn').addEventListener('click', () => this._goStep1());
     document.getElementById('camera-capture-btn').addEventListener('click', () => this._capture());
     document.getElementById('camera-upload').addEventListener('change', e => this._handleUpload(e));
@@ -27,6 +29,8 @@ export class CameraModal {
   }
 
   open() {
+    this._selectedLevel = null;
+    this._nextBtn.disabled = true;
     this._modal.classList.remove('hidden');
     this._goStep1();
   }
@@ -66,7 +70,7 @@ export class CameraModal {
         this._selectedLevel = level;
         this._fruitGrid.querySelectorAll('.cam-fruit-item').forEach(el => el.classList.remove('selected'));
         item.classList.add('selected');
-        setTimeout(() => this._goStep2(), 150);
+        this._nextBtn.disabled = false;
       });
 
       this._fruitGrid.appendChild(item);
