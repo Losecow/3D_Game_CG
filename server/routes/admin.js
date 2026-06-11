@@ -89,4 +89,21 @@ router.get('/feedback', adminAuth, async (req, res) => {
   }
 });
 
+// 어드민 계정 is_admin 세팅 + 수박 충전
+router.post('/setup-admin', adminAuth, async (req, res) => {
+  try {
+    const amount = parseInt(req.query.amount) || 9999;
+    const [user] = await sql`
+      UPDATE users
+      SET is_admin = TRUE, total_watermelons = ${amount}
+      WHERE id = ${req.userId}
+      RETURNING total_watermelons
+    `;
+    res.json({ ok: true, total_watermelons: user.total_watermelons });
+  } catch (err) {
+    console.error('Admin setup error:', err.message);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = router;
