@@ -106,8 +106,8 @@ export class Shop {
   _applyItem(itemId) {
     switch (itemId) {
       case 'shake':
-        this._game.shake();
         this.close();
+        setTimeout(() => this._game.shake(), 150);
         break;
       case 'delete':
         this.close();
