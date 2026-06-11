@@ -241,7 +241,7 @@ export class Game {
     if (this._shakeUsed || this._isGameOver) return;
     this._shakeUsed = true;
     this._mergeGrace = 4000;
-    const strength = 30;
+    const strength = 50;
     this._fruits.forEach(f => {
       const impulse = new CANNON.Vec3(
         (Math.random() - 0.5) * strength,
