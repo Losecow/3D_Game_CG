@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { FRUIT_DATA, MAX_LEVEL } from './FruitData.js';
+import { FRUIT_DATA, MAX_LEVEL, RAINBOW_LEVEL } from './FruitData.js';
 import { Fruit } from './Fruit.js';
 
 /**
@@ -40,13 +40,10 @@ export class Merger {
       const now = performance.now();
       if (now - fruit.spawnTime < 200 || now - otherFruit.spawnTime < 200) return;
 
-      // 같은 단계이고 아직 합체 중이 아닌 경우에만 등록
-      // Only queue if same level and neither is already merging
-      if (
-        fruit.level === otherFruit.level &&
-        !fruit.isMerging &&
-        !otherFruit.isMerging
-      ) {
+      const sameLevel   = fruit.level === otherFruit.level;
+      const rainbowMerge = (fruit.level === RAINBOW_LEVEL) !== (otherFruit.level === RAINBOW_LEVEL); // 한쪽만 레인보우
+
+      if ((sameLevel || rainbowMerge) && !fruit.isMerging && !otherFruit.isMerging) {
         fruit.isMerging = true;
         otherFruit.isMerging = true;
         this._pendingMerges.push([fruit, otherFruit]);
@@ -83,19 +80,22 @@ export class Merger {
       fruitA.destroy();
       fruitB.destroy();
 
-      this.onScore(FRUIT_DATA[fruitA.level].score);
-      this._sound.playMerge(fruitA.level);
+      // 레인보우 합체: 일반 과일 레벨 기준으로 +1
+      const isRainbowMerge = fruitA.level === RAINBOW_LEVEL || fruitB.level === RAINBOW_LEVEL;
+      const baseLevel = isRainbowMerge
+        ? (fruitA.level === RAINBOW_LEVEL ? fruitB.level : fruitA.level)
+        : fruitA.level;
 
-      // 수박(최고 단계)끼리 합체 시 소멸만 함
-      // Max level (watermelon) merge: just disappear, no new fruit
-      if (fruitA.level >= MAX_LEVEL) {
+      this.onScore(FRUIT_DATA[baseLevel].score);
+      this._sound.playMerge(baseLevel);
+
+      if (baseLevel >= MAX_LEVEL) {
         this._onMaxMerge?.();
         continue;
       }
 
-      // 다음 단계 과일 생성 / Create next-level fruit
       const nextFruit = new Fruit(
-        fruitA.level + 1,
+        baseLevel + 1,
         midPos,
         this.scene,
         this.physicsWorld,

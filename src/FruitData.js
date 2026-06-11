@@ -27,3 +27,10 @@ export const MAX_DROP_LEVEL = 4;
 
 /** 최고 단계 레벨 인덱스 / Max fruit level index */
 export const MAX_LEVEL = FRUIT_DATA.length - 1;
+
+/** 레인보우 과일 특수 레벨 - 어떤 과일과도 합체 가능 (대상 +1 업) */
+export const RAINBOW_LEVEL = 99;
+export const RAINBOW_DATA = {
+  level: RAINBOW_LEVEL, name: '레인보우', nameEn: 'Rainbow',
+  radius: 1.25, color: 'rainbow', score: 0, texture: null, isRainbow: true,
+};

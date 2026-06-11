@@ -6,7 +6,7 @@ import { Container } from './Container.js';
 import { Fruit } from './Fruit.js';
 import { Merger } from './Merger.js';
 import { UI } from './UI.js';
-import { FRUIT_DATA, MAX_DROP_LEVEL, MAX_LEVEL } from './FruitData.js';
+import { FRUIT_DATA, MAX_DROP_LEVEL, MAX_LEVEL, RAINBOW_LEVEL } from './FruitData.js';
 import { Sound } from './Sound.js';
 import { setCustomTexture } from './TextureStore.js';
 
@@ -570,6 +570,7 @@ export class Game {
   }
 
   _randomLevel() {
+    if (Math.random() < 0.01) return RAINBOW_LEVEL;
     return Math.floor(Math.random() * (MAX_DROP_LEVEL + 1));
   }
 

@@ -1,12 +1,31 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-import { FRUIT_DATA } from './FruitData.js';
+import { FRUIT_DATA, RAINBOW_LEVEL, RAINBOW_DATA } from './FruitData.js';
 import { getCustomTexture } from './TextureStore.js';
 
 let _fruitIdCounter = 0;
-const _geoCache  = new Map(); // 레벨별 지오메트리 공유 / Shared geometry per level
-const _texCache  = new Map(); // 레벨별 텍스쳐 공유 / Shared texture per level
+const _geoCache  = new Map();
+const _texCache  = new Map();
 const _loader    = new THREE.TextureLoader();
+
+function _makeRainbowTexture() {
+  const size = 256;
+  const canvas = document.createElement('canvas');
+  canvas.width = size; canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  const grad = ctx.createLinearGradient(0, 0, size, 0);
+  ['#ff0000','#ff8800','#ffff00','#00dd00','#0088ff','#8800ff','#ff0000'].forEach(
+    (c, i, a) => grad.addColorStop(i / (a.length - 1), c)
+  );
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, size, size);
+  const shine = ctx.createRadialGradient(90, 80, 10, 90, 80, 90);
+  shine.addColorStop(0, 'rgba(255,255,255,0.55)');
+  shine.addColorStop(1, 'rgba(255,255,255,0)');
+  ctx.fillStyle = shine;
+  ctx.fillRect(0, 0, size, size);
+  return new THREE.CanvasTexture(canvas);
+}
 
 /**
  * 과일 하나를 나타내는 클래스 (Three.js Mesh + cannon-es Body 결합)
@@ -23,7 +42,7 @@ export class Fruit {
   constructor(level, position, scene, physicsWorld, fruitMaterial) {
     this.id = _fruitIdCounter++;
     this.level = level;
-    this.data = FRUIT_DATA[level];
+    this.data = level === RAINBOW_LEVEL ? RAINBOW_DATA : FRUIT_DATA[level];
     this.scene = scene;
     this.physicsWorld = physicsWorld;
 
@@ -49,15 +68,17 @@ export class Fruit {
     }
     const geo = _geoCache.get(this.level);
 
-    if (!_texCache.has(this.level)) {
+    if (this.level === RAINBOW_LEVEL) {
+      if (!_texCache.has(RAINBOW_LEVEL)) _texCache.set(RAINBOW_LEVEL, _makeRainbowTexture());
+    } else if (!_texCache.has(this.level)) {
       _texCache.set(this.level, _loader.load(`/textures/${texture}`));
     }
 
     const customTex = getCustomTexture(this.level);
     const mat = new THREE.MeshStandardMaterial({
       map: customTex ?? _texCache.get(this.level),
-      roughness: 0.2,
-      metalness: 0.0,
+      roughness: 0.15,
+      metalness: 0.1,
     });
 
     this.mesh = new THREE.Mesh(geo, mat);

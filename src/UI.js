@@ -1,4 +1,4 @@
-import { FRUIT_DATA } from './FruitData.js';
+import { FRUIT_DATA, RAINBOW_LEVEL } from './FruitData.js';
 
 export class UI {
   constructor(auth) {
@@ -44,7 +44,8 @@ export class UI {
   }
 
   _drawPreview(canvas, ctx, level) {
-    const { color, name } = FRUIT_DATA[level];
+    const isRainbow = level === RAINBOW_LEVEL;
+    const { color, name } = isRainbow ? { color: 'rainbow', name: '레인보우' } : FRUIT_DATA[level];
     const w = canvas.width;
     const h = canvas.height;
     const r = Math.floor(Math.min(w, h) / 2) - 6;
@@ -52,7 +53,16 @@ export class UI {
     ctx.clearRect(0, 0, w, h);
     ctx.beginPath();
     ctx.arc(w / 2, h / 2 - 4, r, 0, Math.PI * 2);
-    ctx.fillStyle = color;
+
+    if (isRainbow) {
+      const grad = ctx.createLinearGradient(w / 2 - r, 0, w / 2 + r, 0);
+      ['#ff0000','#ff8800','#ffff00','#00dd00','#0088ff','#8800ff','#ff0000'].forEach(
+        (c, i, a) => grad.addColorStop(i / (a.length - 1), c)
+      );
+      ctx.fillStyle = grad;
+    } else {
+      ctx.fillStyle = color;
+    }
     ctx.fill();
     ctx.strokeStyle = 'rgba(255,255,255,0.4)';
     ctx.lineWidth = 2;
