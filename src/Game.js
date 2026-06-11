@@ -484,7 +484,8 @@ export class Game {
 
     // 과일 반지름만큼 여백을 두어 테두리가 벽 안쪽에 오도록 클램핑
     // Clamp so the fruit edge stays inside the container walls
-    const r = FRUIT_DATA[this._currentLevel].radius;
+    const _data = this._currentLevel === RAINBOW_LEVEL ? RAINBOW_DATA : FRUIT_DATA[this._currentLevel];
+    const r = _data.radius;
     const hw = this._gameContainer.width / 2 - r;
     const hd = this._gameContainer.depth / 2 - r;
     target.x = Math.max(-hw, Math.min(hw, target.x));
@@ -509,7 +510,8 @@ export class Game {
     if (!this._raycaster.ray.intersectPlane(plane, target)) return null;
 
     // 과일 반지름만큼 여백을 두어 테두리가 벽 안쪽에 오도록 클램핑
-    const r = FRUIT_DATA[this._currentLevel].radius;
+    const _data2 = this._currentLevel === RAINBOW_LEVEL ? RAINBOW_DATA : FRUIT_DATA[this._currentLevel];
+    const r = _data2.radius;
     const hw = this._gameContainer.width / 2 - r;
     const hd = this._gameContainer.depth / 2 - r;
     target.x = Math.max(-hw, Math.min(hw, target.x));
