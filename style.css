@@ -400,6 +400,7 @@ body {
 
 #settings-btn:hover { background: rgba(255, 255, 255, 0.1); }
 
+#camera-btn,
 #shop-btn,
 #leaderboard-btn,
 #splitview-btn {
@@ -415,6 +416,7 @@ body {
   transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
+#camera-btn:hover,
 #shop-btn:hover,
 #leaderboard-btn:hover,
 #splitview-btn:hover { background: rgba(255, 255, 255, 0.1); }
