@@ -17,6 +17,7 @@ router.get('/leaderboard', async (req, res) => {
           s.created_at
         FROM scores s
         JOIN users u ON s.user_id = u.id
+        WHERE u.is_admin IS NOT TRUE
         ORDER BY u.id, s.score DESC, s.created_at ASC
       ) best
       ORDER BY score DESC, watermelons DESC, created_at ASC
@@ -36,6 +37,16 @@ router.post('/scores', authMiddleware, async (req, res) => {
       return res.status(400).json({ error: 'Invalid score' });
     }
     const wm = Number.isInteger(watermelons) && watermelons >= 0 ? watermelons : 0;
+
+    const [{ is_admin, total_watermelons: currentWm }] = await sql`
+      SELECT is_admin, total_watermelons FROM users WHERE id = ${req.userId}
+    `;
+
+    // 어드민은 점수 저장 및 수박 누적 스킵
+    if (is_admin) {
+      return res.json({ ok: true, total_watermelons: currentWm });
+    }
+
     await sql`INSERT INTO scores (user_id, score, watermelons) VALUES (${req.userId}, ${score}, ${wm})`;
     const [{ total_watermelons }] = await sql`
       UPDATE users SET total_watermelons = total_watermelons + ${wm}
