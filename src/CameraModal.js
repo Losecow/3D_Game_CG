@@ -128,16 +128,32 @@ export class CameraModal {
     const sphere = new THREE.Mesh(geo, mat);
     scene.add(sphere);
 
-    let animId;
-    const loop = () => {
-      animId = requestAnimationFrame(loop);
-      sphere.rotation.y += 0.012;
+    // 드래그 회전
+    let isDragging = false;
+    let prevX = 0, prevY = 0;
+
+    const onDown = (x, y) => { isDragging = true; prevX = x; prevY = y; };
+    const onMove = (x, y) => {
+      if (!isDragging) return;
+      sphere.rotation.y += (x - prevX) * 0.01;
+      sphere.rotation.x += (y - prevY) * 0.01;
+      prevX = x; prevY = y;
       renderer.render(scene, camera);
     };
-    loop();
+    const onUp = () => { isDragging = false; };
+
+    c.addEventListener('mousedown',  e => onDown(e.clientX, e.clientY));
+    c.addEventListener('mousemove',  e => onMove(e.clientX, e.clientY));
+    c.addEventListener('mouseup',    onUp);
+    c.addEventListener('mouseleave', onUp);
+    c.addEventListener('touchstart', e => { e.preventDefault(); onDown(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
+    c.addEventListener('touchmove',  e => { e.preventDefault(); onMove(e.touches[0].clientX, e.touches[0].clientY); }, { passive: false });
+    c.addEventListener('touchend',   onUp);
+
+    // 초기 1회 렌더
+    renderer.render(scene, camera);
 
     this._sphereCleanup = () => {
-      cancelAnimationFrame(animId);
       renderer.dispose();
       geo.dispose();
       mat.dispose();

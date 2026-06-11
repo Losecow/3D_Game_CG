@@ -1096,7 +1096,10 @@ body {
   width: 100%;
   height: 100%;
   display: block;
+  cursor: grab;
 }
+
+#camera-sphere-canvas:active { cursor: grabbing; }
 
 #camera-preview-actions {
   display: flex;
