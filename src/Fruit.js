@@ -51,7 +51,9 @@ export class Fruit {
     const geo = _geoCache.get(this.level);
 
     if (!_texCache.has(this.level)) {
-      _texCache.set(this.level, _loader.load(`/textures/${texture}`));
+      const t = _loader.load(`/textures/${texture}`);
+      if (this.level === RAINBOW_LEVEL) t.wrapS = THREE.RepeatWrapping;
+      _texCache.set(this.level, t);
     }
 
     const customTex = getCustomTexture(this.level);
@@ -67,6 +69,37 @@ export class Fruit {
     this.mesh.receiveShadow = true;
 
     this.scene.add(this.mesh);
+
+    if (this.level === RAINBOW_LEVEL) this._initRainbowFX(radius);
+  }
+
+  _initRainbowFX(radius) {
+    // 외곽 글로우 구체 (BackSide: 안쪽 면이 바깥을 향해 후광 효과)
+    const glowGeo = new THREE.SphereGeometry(radius * 1.55, 24, 16);
+    const glowMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.22,
+      side: THREE.BackSide,
+      depthWrite: false,
+    });
+    this._glowMesh = new THREE.Mesh(glowGeo, glowMat);
+    this.mesh.add(this._glowMesh);
+
+    // 두 번째 글로우 레이어 (더 크고 흐릿)
+    const outerGeo = new THREE.SphereGeometry(radius * 2.0, 24, 16);
+    const outerMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.08,
+      side: THREE.BackSide,
+      depthWrite: false,
+    });
+    this._outerGlowMesh = new THREE.Mesh(outerGeo, outerMat);
+    this.mesh.add(this._outerGlowMesh);
+
+    this.mesh.material.emissiveIntensity = 0;
+    this._fxColor = new THREE.Color();
   }
 
   /**
@@ -135,6 +168,39 @@ export class Fruit {
     this.mesh.position.copy(this.body.position);
     this.mesh.quaternion.copy(this.body.quaternion);
     if (this._birthAnim) this._tickBirthAnim();
+    if (this.level === RAINBOW_LEVEL) this._tickRainbowFX();
+  }
+
+  _tickRainbowFX() {
+    const t = performance.now() / 1000;
+    const hue = (t * 0.5) % 1;
+
+    // 에미시브 색상 순환 (발광)
+    this._fxColor.setHSL(hue, 1.0, 0.55);
+    this.mesh.material.emissive.copy(this._fxColor);
+    this.mesh.material.emissiveIntensity = 0.45 + 0.25 * Math.sin(t * 5.0);
+
+    // 텍스쳐 흐르기
+    if (this.mesh.material.map) {
+      this.mesh.material.map.offset.x = (t * 0.09) % 1;
+      this.mesh.material.map.needsUpdate = true;
+    }
+
+    // 내부 글로우: 보색으로 순환
+    if (this._glowMesh) {
+      this._fxColor.setHSL((hue + 0.5) % 1, 1.0, 0.65);
+      this._glowMesh.material.color.copy(this._fxColor);
+      this._glowMesh.material.opacity = 0.18 + 0.12 * Math.sin(t * 3.5);
+      this._glowMesh.scale.setScalar(1 + 0.07 * Math.sin(t * 6.0));
+    }
+
+    // 외부 글로우: 느리게 펄스
+    if (this._outerGlowMesh) {
+      this._fxColor.setHSL((hue + 0.25) % 1, 1.0, 0.6);
+      this._outerGlowMesh.material.color.copy(this._fxColor);
+      this._outerGlowMesh.material.opacity = 0.06 + 0.05 * Math.sin(t * 2.0);
+      this._outerGlowMesh.scale.setScalar(1 + 0.04 * Math.sin(t * 2.5 + 1));
+    }
   }
 
   _tickBirthAnim() {
@@ -157,10 +223,14 @@ export class Fruit {
     this.scene.remove(this.mesh);
     this.physicsWorld.removeBody(this.body);
 
-    // 지오메트리는 공유 캐시이므로 dispose 하지 않음
     this.mesh.material.dispose();
-    const sprite = this.mesh.children[0];
-    if (sprite?.material?.map) sprite.material.map.dispose();
-    if (sprite?.material) sprite.material.dispose();
+    if (this._glowMesh) {
+      this._glowMesh.geometry.dispose();
+      this._glowMesh.material.dispose();
+    }
+    if (this._outerGlowMesh) {
+      this._outerGlowMesh.geometry.dispose();
+      this._outerGlowMesh.material.dispose();
+    }
   }
 }

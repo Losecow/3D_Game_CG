@@ -165,9 +165,10 @@ export class Game {
 
   /** 드롭할 과일 미리보기 구체 / Drop position preview sphere */
   _initPreviewSphere() {
-    const data = this._currentLevel === RAINBOW_LEVEL ? RAINBOW_DATA : FRUIT_DATA[this._currentLevel];
-    const geo = new THREE.SphereGeometry(data.radius, 24, 16);
+    const isRainbow = this._currentLevel === RAINBOW_LEVEL;
+    const data = isRainbow ? RAINBOW_DATA : FRUIT_DATA[this._currentLevel];
     const tex = new THREE.TextureLoader().load(`/textures/${data.texture}`);
+    if (isRainbow) tex.wrapS = THREE.RepeatWrapping;
     const mat = new THREE.MeshStandardMaterial({
       map: tex,
       roughness: 0.2,
@@ -175,9 +176,23 @@ export class Game {
       transparent: true,
       opacity: 0.6,
     });
+    const geo = new THREE.SphereGeometry(data.radius, 24, 16);
     this._previewSphere = new THREE.Mesh(geo, mat);
     this._previewSphere.visible = false;
     this._scene.add(this._previewSphere);
+
+    if (isRainbow) {
+      const glowGeo = new THREE.SphereGeometry(data.radius * 1.55, 24, 16);
+      const glowMat = new THREE.MeshBasicMaterial({
+        color: 0xffffff, transparent: true, opacity: 0.2,
+        side: THREE.BackSide, depthWrite: false,
+      });
+      this._previewGlow = new THREE.Mesh(glowGeo, glowMat);
+      this._previewSphere.add(this._previewGlow);
+      this._previewFxColor = new THREE.Color();
+    } else {
+      this._previewGlow = null;
+    }
   }
 
   /** 합체 매니저 초기화 / Initialize merger */
@@ -560,6 +575,11 @@ export class Game {
     this._scene.remove(this._previewSphere);
     this._previewSphere.geometry.dispose();
     this._previewSphere.material.dispose();
+    if (this._previewGlow) {
+      this._previewGlow.geometry.dispose();
+      this._previewGlow.material.dispose();
+      this._previewGlow = null;
+    }
     this._initPreviewSphere();
   }
 
@@ -572,7 +592,7 @@ export class Game {
   }
 
   _randomLevel() {
-    if (Math.random() < 0.10) return RAINBOW_LEVEL;
+    if (Math.random() < 0.05) return RAINBOW_LEVEL;
     return Math.floor(Math.random() * (MAX_DROP_LEVEL + 1));
   }
 
@@ -681,6 +701,26 @@ export class Game {
 
       // 4. 게임 오버 체크 / Check game over
       this._checkGameOver(dt);
+    }
+
+    // 레인보우 미리보기 구체 애니메이션
+    if (this._currentLevel === RAINBOW_LEVEL && this._previewSphere?.visible) {
+      const t = performance.now() / 1000;
+      const hue = (t * 0.5) % 1;
+      if (!this._previewFxColor) this._previewFxColor = new THREE.Color();
+      this._previewFxColor.setHSL(hue, 1.0, 0.55);
+      this._previewSphere.material.emissive.copy(this._previewFxColor);
+      this._previewSphere.material.emissiveIntensity = 0.4 + 0.2 * Math.sin(t * 5.0);
+      if (this._previewSphere.material.map) {
+        this._previewSphere.material.map.offset.x = (t * 0.09) % 1;
+        this._previewSphere.material.map.needsUpdate = true;
+      }
+      if (this._previewGlow) {
+        this._previewFxColor.setHSL((hue + 0.5) % 1, 1.0, 0.65);
+        this._previewGlow.material.color.copy(this._previewFxColor);
+        this._previewGlow.material.opacity = 0.18 + 0.12 * Math.sin(t * 3.5);
+        this._previewGlow.scale.setScalar(1 + 0.07 * Math.sin(t * 6.0));
+      }
     }
 
     // 5. 카메라 컨트롤 업데이트 / Update camera controls
