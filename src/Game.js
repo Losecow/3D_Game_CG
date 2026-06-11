@@ -254,13 +254,20 @@ export class Game {
   flip() {
     if (this._flipUsed || this._isGameOver) return;
     this._flipUsed = true;
+    const h = this._gameContainer.height;
     this._fruits.forEach(f => {
-      const impulse = new CANNON.Vec3(
-        (Math.random() - 0.5) * 12,
-        30 + Math.random() * 15,
-        (Math.random() - 0.5) * 12
+      const newY = Math.max(h - f.body.position.y, f.data.radius + 0.1);
+      f.body.position.y = newY;
+      f.body.velocity.set(
+        (Math.random() - 0.5) * 2,
+        -1,
+        (Math.random() - 0.5) * 2
       );
-      f.body.applyImpulse(impulse);
+      f.body.angularVelocity.set(
+        (Math.random() - 0.5) * 8,
+        (Math.random() - 0.5) * 8,
+        (Math.random() - 0.5) * 8
+      );
       f.body.wakeUp();
     });
   }
