@@ -15,9 +15,10 @@ export class CameraModal {
     this._fruitGrid  = document.getElementById('camera-fruit-grid');
     this._noCam         = document.getElementById('camera-no-cam');
     this._selectedLabel = document.getElementById('camera-selected-name');
-    this._nextBtn       = document.getElementById('camera-next-btn');
-    this._stepPreview   = document.getElementById('camera-step-preview');
-    this._previewImg    = document.getElementById('camera-preview-img');
+    this._nextBtn         = document.getElementById('camera-next-btn');
+    this._stepPreview     = document.getElementById('camera-step-preview');
+    this._sphereCanvas    = document.getElementById('camera-sphere-canvas');
+    this._sphereCleanup   = null;
 
     document.getElementById('camera-btn').addEventListener('click', () => this.open());
     document.getElementById('camera-close').addEventListener('click', () => this.close());
@@ -41,6 +42,7 @@ export class CameraModal {
 
   close() {
     this._stopCamera();
+    this._stopSpherePreview();
     this._modal.classList.add('hidden');
   }
 
@@ -85,6 +87,7 @@ export class CameraModal {
   // ──────── Step 2: 카메라 ────────
 
   async _goStep2() {
+    this._stopSpherePreview();
     this._stepFruit.classList.add('hidden');
     this._stepPreview.classList.add('hidden');
     this._stepCam.classList.remove('hidden');
@@ -94,8 +97,57 @@ export class CameraModal {
 
   _goStep3() {
     this._stepCam.classList.add('hidden');
-    this._previewImg.src = this._canvas.toDataURL('image/jpeg', 0.9);
     this._stepPreview.classList.remove('hidden');
+    this._startSpherePreview();
+  }
+
+  _startSpherePreview() {
+    this._stopSpherePreview();
+
+    const c = this._sphereCanvas;
+    const size = c.parentElement.clientWidth || 280;
+    c.width  = size;
+    c.height = size;
+
+    const renderer = new THREE.WebGLRenderer({ canvas: c, antialias: true, alpha: true });
+    renderer.setSize(size, size);
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+    const scene  = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 100);
+    camera.position.set(0, 0, 3.2);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 1.0));
+    const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+    dir.position.set(2, 2, 2);
+    scene.add(dir);
+
+    const tex    = new THREE.CanvasTexture(this._canvas);
+    const geo    = new THREE.SphereGeometry(1, 48, 32);
+    const mat    = new THREE.MeshStandardMaterial({ map: tex, roughness: 0.25 });
+    const sphere = new THREE.Mesh(geo, mat);
+    scene.add(sphere);
+
+    let animId;
+    const loop = () => {
+      animId = requestAnimationFrame(loop);
+      sphere.rotation.y += 0.012;
+      renderer.render(scene, camera);
+    };
+    loop();
+
+    this._sphereCleanup = () => {
+      cancelAnimationFrame(animId);
+      renderer.dispose();
+      geo.dispose();
+      mat.dispose();
+      tex.dispose();
+    };
+  }
+
+  _stopSpherePreview() {
+    this._sphereCleanup?.();
+    this._sphereCleanup = null;
   }
 
   async _startCamera() {
