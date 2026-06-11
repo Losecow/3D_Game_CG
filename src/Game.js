@@ -6,7 +6,8 @@ import { Container } from './Container.js';
 import { Fruit } from './Fruit.js';
 import { Merger } from './Merger.js';
 import { UI } from './UI.js';
-import { FRUIT_DATA, MAX_DROP_LEVEL, MAX_LEVEL, RAINBOW_LEVEL } from './FruitData.js';
+import { FRUIT_DATA, MAX_DROP_LEVEL, MAX_LEVEL, RAINBOW_LEVEL, RAINBOW_DATA } from './FruitData.js';
+import { makeRainbowTexture } from './Fruit.js';
 import { Sound } from './Sound.js';
 import { setCustomTexture } from './TextureStore.js';
 
@@ -165,9 +166,12 @@ export class Game {
 
   /** 드롭할 과일 미리보기 구체 / Drop position preview sphere */
   _initPreviewSphere() {
-    const data = FRUIT_DATA[this._currentLevel];
+    const isRainbow = this._currentLevel === RAINBOW_LEVEL;
+    const data = isRainbow ? RAINBOW_DATA : FRUIT_DATA[this._currentLevel];
     const geo = new THREE.SphereGeometry(data.radius, 24, 16);
-    const tex = new THREE.TextureLoader().load(`/textures/${data.texture}`);
+    const tex = isRainbow
+      ? makeRainbowTexture()
+      : new THREE.TextureLoader().load(`/textures/${data.texture}`);
     const mat = new THREE.MeshStandardMaterial({
       map: tex,
       roughness: 0.2,
@@ -570,7 +574,7 @@ export class Game {
   }
 
   _randomLevel() {
-    if (Math.random() < 0.01) return RAINBOW_LEVEL;
+    if (Math.random() < 0.10) return RAINBOW_LEVEL;
     return Math.floor(Math.random() * (MAX_DROP_LEVEL + 1));
   }
 
