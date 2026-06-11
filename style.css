@@ -867,6 +867,194 @@ body {
   white-space: nowrap;
 }
 
+/* 카메라 / 커스텀 텍스쳐 모달 */
+#camera-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+#camera-modal.hidden { display: none; }
+
+#camera-box {
+  background: #16213e;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 32px 36px;
+  width: 90%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#camera-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#camera-header h2 {
+  font-size: 1.3rem;
+  color: #fff;
+}
+
+#camera-close {
+  background: transparent;
+  border: none;
+  color: #aaa;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+}
+
+#camera-close:hover { color: #fff; }
+
+.camera-desc {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-bottom: 12px;
+}
+
+#camera-fruit-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.cam-fruit-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 4px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.cam-fruit-item:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cam-fruit-item.selected {
+  border-color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+}
+
+.cam-fruit-item img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.cam-fruit-item span {
+  font-size: 0.7rem;
+  color: #ccc;
+}
+
+#camera-step-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+#camera-back-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: #aaa;
+  font-size: 0.82rem;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+#camera-back-btn:hover { background: rgba(255, 255, 255, 0.15); color: #fff; }
+
+#camera-selected-name {
+  color: #4ade80;
+  font-weight: 700;
+}
+
+#camera-preview-wrap {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#camera-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); /* 거울 효과 */
+}
+
+#camera-no-cam {
+  text-align: center;
+  color: #aaa;
+  font-size: 0.85rem;
+  padding: 12px 0;
+}
+
+#camera-no-cam.hidden { display: none; }
+
+#camera-actions {
+  display: flex;
+  gap: 10px;
+}
+
+#camera-capture-btn {
+  flex: 1;
+  background: #4ade80;
+  border: none;
+  border-radius: 10px;
+  color: #000;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+#camera-capture-btn:hover { background: #22c55e; }
+
+#camera-upload-label {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: #ccc;
+  font-size: 0.88rem;
+  padding: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#camera-upload-label:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+
+#camera-upload { display: none; }
+
 /* 삭제 모드 배너 / Delete mode banner */
 #delete-mode-banner {
   position: fixed;

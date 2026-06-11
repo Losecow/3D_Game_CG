@@ -50,6 +50,7 @@
         </div>
       </div>
 
+      <button id="camera-btn">📷 커스텀</button>
       <button id="shop-btn">🍉 상점</button>
       <button id="leaderboard-btn">🏆 리더보드</button>
       <button id="splitview-btn">⊞ 분할 뷰</button>
@@ -89,6 +90,44 @@
       <div id="inspect-actions">
         <button id="inspect-back-btn">결과 보기</button>
         <button id="inspect-restart-btn">다시 시작</button>
+      </div>
+    </div>
+
+    <!-- 카메라 / 커스텀 텍스쳐 모달 -->
+    <div id="camera-modal" class="hidden">
+      <div id="camera-box">
+        <div id="camera-header">
+          <h2>📷 커스텀 텍스쳐</h2>
+          <button id="camera-close">×</button>
+        </div>
+
+        <!-- Step 1: 과일 선택 -->
+        <div id="camera-step-fruit">
+          <p class="camera-desc">텍스쳐를 바꿀 과일을 선택하세요</p>
+          <div id="camera-fruit-grid"></div>
+        </div>
+
+        <!-- Step 2: 카메라 -->
+        <div id="camera-step-cam" class="hidden">
+          <div id="camera-step-header">
+            <button id="camera-back-btn">← 다시 선택</button>
+            <span id="camera-selected-name"></span> 텍스쳐 촬영
+          </div>
+          <div id="camera-preview-wrap">
+            <video id="camera-video" autoplay muted playsinline></video>
+          </div>
+          <div id="camera-no-cam" class="hidden">
+            <p>카메라를 사용할 수 없습니다.<br/>파일로 업로드하세요.</p>
+          </div>
+          <canvas id="camera-canvas" style="display:none"></canvas>
+          <div id="camera-actions">
+            <button id="camera-capture-btn">📸 촬영</button>
+            <label id="camera-upload-label">
+              🖼️ 파일 선택
+              <input type="file" id="camera-upload" accept="image/*">
+            </label>
+          </div>
+        </div>
       </div>
     </div>
 

@@ -8,6 +8,7 @@ import { Merger } from './Merger.js';
 import { UI } from './UI.js';
 import { FRUIT_DATA, MAX_DROP_LEVEL, MAX_LEVEL } from './FruitData.js';
 import { Sound } from './Sound.js';
+import { setCustomTexture } from './TextureStore.js';
 
 /**
  * 메인 게임 클래스 - 씬, 루프, 상태 관리를 총괄
@@ -229,7 +230,7 @@ export class Game {
 
   /** 모달이 열려있으면 드롭 차단 / Block drop when any modal is open */
   _isAnyModalOpen() {
-    return ['settings-modal', 'leaderboard-modal', 'nickname-modal', 'feedback-modal', 'shop-modal'].some(
+    return ['settings-modal', 'leaderboard-modal', 'nickname-modal', 'feedback-modal', 'shop-modal', 'camera-modal'].some(
       id => !document.getElementById(id).classList.contains('hidden')
     );
   }
@@ -250,6 +251,17 @@ export class Game {
       f.body.applyImpulse(impulse);
       f.body.wakeUp();
     });
+  }
+
+  applyCustomTexture(level, texture) {
+    setCustomTexture(level, texture);
+    this._fruits.forEach(f => {
+      if (f.level !== level) return;
+      f.mesh.material.map = texture;
+      f.mesh.material.needsUpdate = true;
+    });
+    // 프리뷰 구체도 현재 레벨이면 갱신
+    if (this._currentLevel === level) this._updatePreviewSphere();
   }
 
   flip() {

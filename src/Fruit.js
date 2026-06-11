@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { FRUIT_DATA } from './FruitData.js';
+import { getCustomTexture } from './TextureStore.js';
 
 let _fruitIdCounter = 0;
 const _geoCache  = new Map(); // 레벨별 지오메트리 공유 / Shared geometry per level
@@ -52,8 +53,9 @@ export class Fruit {
       _texCache.set(this.level, _loader.load(`/textures/${texture}`));
     }
 
+    const customTex = getCustomTexture(this.level);
     const mat = new THREE.MeshStandardMaterial({
-      map: _texCache.get(this.level),
+      map: customTex ?? _texCache.get(this.level),
       roughness: 0.2,
       metalness: 0.0,
     });
