@@ -254,6 +254,7 @@ export class Game {
   flip() {
     if (this._flipUsed || this._isGameOver) return;
     this._flipUsed = true;
+    this._mergeGrace = 5000; // 과일이 내려앉을 때까지 게임 오버 유예
     const h = this._gameContainer.height;
     this._fruits.forEach(f => {
       const newY = Math.max(h - f.body.position.y, f.data.radius + 0.1);
