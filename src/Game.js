@@ -239,6 +239,7 @@ export class Game {
   shake() {
     if (this._shakeUsed || this._isGameOver) return;
     this._shakeUsed = true;
+    this._mergeGrace = 4000;
     const strength = 30;
     this._fruits.forEach(f => {
       const impulse = new CANNON.Vec3(
