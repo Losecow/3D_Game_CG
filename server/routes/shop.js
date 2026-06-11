@@ -6,6 +6,7 @@ const router = express.Router();
 
 const ITEMS = [
   { id: 'shake',    name: '섞기',        cost: 1 },
+  { id: 'flip',     name: '뒤집기',      cost: 2 },
   { id: 'delete',   name: '과일 삭제',   cost: 1 },
   { id: 'nickname', name: '닉네임 변경', cost: 1 },
 ];

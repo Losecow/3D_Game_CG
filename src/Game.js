@@ -36,6 +36,7 @@ export class Game {
     this._lastDropPos = null;
 
     this._shakeUsed   = false;   // 게임당 1회
+    this._flipUsed    = false;   // 게임당 1회
     this._deleteMode  = false;   // 과일 삭제 모드
     this._onDeleteFruit = null;
 
@@ -223,6 +224,7 @@ export class Game {
   get isSplitView()  { return this._splitView; }
   get sound()        { return this._sound; }
   get shakeUsed()    { return this._shakeUsed; }
+  get flipUsed()     { return this._flipUsed; }
   get isGameOver()   { return this._isGameOver; }
 
   /** 모달이 열려있으면 드롭 차단 / Block drop when any modal is open */
@@ -237,12 +239,26 @@ export class Game {
   shake() {
     if (this._shakeUsed || this._isGameOver) return;
     this._shakeUsed = true;
-    const strength = 15;
+    const strength = 30;
     this._fruits.forEach(f => {
       const impulse = new CANNON.Vec3(
         (Math.random() - 0.5) * strength,
         Math.random() * strength * 0.5,
         (Math.random() - 0.5) * strength
+      );
+      f.body.applyImpulse(impulse);
+      f.body.wakeUp();
+    });
+  }
+
+  flip() {
+    if (this._flipUsed || this._isGameOver) return;
+    this._flipUsed = true;
+    this._fruits.forEach(f => {
+      const impulse = new CANNON.Vec3(
+        (Math.random() - 0.5) * 12,
+        30 + Math.random() * 15,
+        (Math.random() - 0.5) * 12
       );
       f.body.applyImpulse(impulse);
       f.body.wakeUp();
@@ -605,6 +621,7 @@ export class Game {
     this._mergeGrace = 0;
     this._dropCooldown = false;
     this._shakeUsed = false;
+    this._flipUsed  = false;
     this.exitDeleteMode();
 
     this._currentLevel = this._randomLevel();

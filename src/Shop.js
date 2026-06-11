@@ -1,5 +1,6 @@
 const DESCS = {
   shake:    '모든 과일을 뒤섞습니다 (게임당 1회)',
+  flip:     '모든 과일을 위로 튕겨냅니다 (게임당 1회)',
   delete:   '과일 하나를 제거합니다',
   nickname: '닉네임을 변경합니다',
 };
@@ -59,9 +60,10 @@ export class Shop {
     this._items.forEach(item => {
       const canAfford  = this._balance >= item.cost;
       const shakeGone  = item.id === 'shake' && (this._game.shakeUsed || this._game.isGameOver);
+      const flipGone   = item.id === 'flip'  && (this._game.flipUsed  || this._game.isGameOver);
       const deleteGone = item.id === 'delete' && this._game.isGameOver;
-      const disabled   = !canAfford || shakeGone || deleteGone;
-      const hint       = (item.id === 'shake' && this._game.shakeUsed && !this._game.isGameOver) ? ' (이미 사용)' : '';
+      const disabled   = !canAfford || shakeGone || flipGone || deleteGone;
+      const hint       = ((item.id === 'shake' && this._game.shakeUsed) || (item.id === 'flip' && this._game.flipUsed)) && !this._game.isGameOver ? ' (이미 사용)' : '';
 
       const div = document.createElement('div');
       div.className = 'shop-item';
@@ -108,6 +110,10 @@ export class Shop {
       case 'shake':
         this.close();
         setTimeout(() => this._game.shake(), 150);
+        break;
+      case 'flip':
+        this.close();
+        setTimeout(() => this._game.flip(), 150);
         break;
       case 'delete':
         this.close();
