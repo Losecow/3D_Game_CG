@@ -20,7 +20,7 @@ export class Container {
 
     // 게임 오버 위험선 높이 (컨테이너 바닥 기준 Y 좌표)
     // Danger line Y position (from floor)
-    this.dangerLineY = this.height * 0.80;
+    this.dangerLineY = this.height * 0.56; // 임시: 컨테스트용 플레이타임 단축
 
     this._buildVisuals(scene);
     this._buildPhysics(physicsWorld, wallMaterial);
