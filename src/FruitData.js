@@ -32,5 +32,5 @@ export const MAX_LEVEL = FRUIT_DATA.length - 1;
 export const RAINBOW_LEVEL = 99;
 export const RAINBOW_DATA = {
   level: RAINBOW_LEVEL, name: '레인보우', nameEn: 'Rainbow',
-  radius: 1.25, color: 'rainbow', score: 0, texture: null, isRainbow: true,
+  radius: 1.25, color: 'rainbow', score: 0, texture: 'rainbow.png', isRainbow: true,
 };

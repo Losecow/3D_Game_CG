@@ -8,24 +8,6 @@ const _geoCache  = new Map();
 const _texCache  = new Map();
 const _loader    = new THREE.TextureLoader();
 
-export function makeRainbowTexture() {
-  const size = 256;
-  const canvas = document.createElement('canvas');
-  canvas.width = size; canvas.height = size;
-  const ctx = canvas.getContext('2d');
-  const grad = ctx.createLinearGradient(0, 0, size, 0);
-  ['#ff0000','#ff8800','#ffff00','#00dd00','#0088ff','#8800ff','#ff0000'].forEach(
-    (c, i, a) => grad.addColorStop(i / (a.length - 1), c)
-  );
-  ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, size, size);
-  const shine = ctx.createRadialGradient(90, 80, 10, 90, 80, 90);
-  shine.addColorStop(0, 'rgba(255,255,255,0.55)');
-  shine.addColorStop(1, 'rgba(255,255,255,0)');
-  ctx.fillStyle = shine;
-  ctx.fillRect(0, 0, size, size);
-  return new THREE.CanvasTexture(canvas);
-}
 
 /**
  * 과일 하나를 나타내는 클래스 (Three.js Mesh + cannon-es Body 결합)
@@ -68,9 +50,7 @@ export class Fruit {
     }
     const geo = _geoCache.get(this.level);
 
-    if (this.level === RAINBOW_LEVEL) {
-      if (!_texCache.has(RAINBOW_LEVEL)) _texCache.set(RAINBOW_LEVEL, makeRainbowTexture());
-    } else if (!_texCache.has(this.level)) {
+    if (!_texCache.has(this.level)) {
       _texCache.set(this.level, _loader.load(`/textures/${texture}`));
     }
 
