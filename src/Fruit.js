@@ -8,7 +8,7 @@ const _geoCache  = new Map();
 const _texCache  = new Map();
 const _loader    = new THREE.TextureLoader();
 
-function _makeRainbowTexture() {
+export function makeRainbowTexture() {
   const size = 256;
   const canvas = document.createElement('canvas');
   canvas.width = size; canvas.height = size;
@@ -69,7 +69,7 @@ export class Fruit {
     const geo = _geoCache.get(this.level);
 
     if (this.level === RAINBOW_LEVEL) {
-      if (!_texCache.has(RAINBOW_LEVEL)) _texCache.set(RAINBOW_LEVEL, _makeRainbowTexture());
+      if (!_texCache.has(RAINBOW_LEVEL)) _texCache.set(RAINBOW_LEVEL, makeRainbowTexture());
     } else if (!_texCache.has(this.level)) {
       _texCache.set(this.level, _loader.load(`/textures/${texture}`));
     }
