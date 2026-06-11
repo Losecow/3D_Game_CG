@@ -13,9 +13,11 @@ export class CameraModal {
     this._video      = document.getElementById('camera-video');
     this._canvas     = document.getElementById('camera-canvas');
     this._fruitGrid  = document.getElementById('camera-fruit-grid');
-    this._noCam      = document.getElementById('camera-no-cam');
+    this._noCam         = document.getElementById('camera-no-cam');
     this._selectedLabel = document.getElementById('camera-selected-name');
-    this._nextBtn    = document.getElementById('camera-next-btn');
+    this._nextBtn       = document.getElementById('camera-next-btn');
+    this._stepPreview   = document.getElementById('camera-step-preview');
+    this._previewImg    = document.getElementById('camera-preview-img');
 
     document.getElementById('camera-btn').addEventListener('click', () => this.open());
     document.getElementById('camera-close').addEventListener('click', () => this.close());
@@ -23,6 +25,8 @@ export class CameraModal {
     document.getElementById('camera-back-btn').addEventListener('click', () => this._goStep1());
     document.getElementById('camera-capture-btn').addEventListener('click', () => this._capture());
     document.getElementById('camera-upload').addEventListener('change', e => this._handleUpload(e));
+    document.getElementById('camera-retake-btn').addEventListener('click', async () => this._goStep2());
+    document.getElementById('camera-apply-btn').addEventListener('click', () => this._applyTexture());
     this._modal.addEventListener('click', e => { if (e.target === this._modal) this.close(); });
 
     this._buildGrid();
@@ -47,6 +51,7 @@ export class CameraModal {
     this._noCam.classList.add('hidden');
     this._stepFruit.classList.remove('hidden');
     this._stepCam.classList.add('hidden');
+    this._stepPreview.classList.add('hidden');
   }
 
   _buildGrid() {
@@ -81,9 +86,16 @@ export class CameraModal {
 
   async _goStep2() {
     this._stepFruit.classList.add('hidden');
+    this._stepPreview.classList.add('hidden');
     this._stepCam.classList.remove('hidden');
     this._selectedLabel.textContent = FRUIT_DATA[this._selectedLevel].name;
     await this._startCamera();
+  }
+
+  _goStep3() {
+    this._stepCam.classList.add('hidden');
+    this._previewImg.src = this._canvas.toDataURL('image/jpeg', 0.9);
+    this._stepPreview.classList.remove('hidden');
   }
 
   async _startCamera() {
@@ -117,12 +129,12 @@ export class CameraModal {
     this._canvas.width = 256;
     this._canvas.height = 256;
     const ctx = this._canvas.getContext('2d');
-    // 좌우 반전 (셀카 거울 효과)
     ctx.translate(256, 0);
     ctx.scale(-1, 1);
     ctx.drawImage(this._video, sx, sy, size, size, 0, 0, 256, 256);
 
-    this._applyTexture();
+    this._stopCamera();
+    this._goStep3();
   }
 
   _handleUpload(e) {
@@ -139,10 +151,9 @@ export class CameraModal {
       const ctx = this._canvas.getContext('2d');
       ctx.drawImage(img, sx, sy, size, size, 0, 0, 256, 256);
       URL.revokeObjectURL(url);
-      this._applyTexture();
+      this._goStep3();
     };
     img.src = url;
-    // input 초기화 (같은 파일 재선택 가능하게)
     e.target.value = '';
   }
 
