@@ -45,51 +45,36 @@ export class UI {
 
   _drawPreview(canvas, ctx, level) {
     const isRainbow = level === RAINBOW_LEVEL;
-    const { color, name } = isRainbow ? { color: 'rainbow', name: '레인보우' } : FRUIT_DATA[level];
-    const w = canvas.width;
-    const h = canvas.height;
-    const r = Math.floor(Math.min(w, h) / 2) - 6;
+    const data = isRainbow ? { name: '레인보우', texture: 'rainbow.png' } : FRUIT_DATA[level];
+    const w  = canvas.width;
+    const h  = canvas.height;
+    const r  = Math.floor(Math.min(w, h) / 2) - 6;
+    const cx = w / 2;
+    const cy = h / 2 - 4;
 
     ctx.clearRect(0, 0, w, h);
 
-    if (isRainbow) {
-      const img = new Image();
-      img.onload = () => {
-        ctx.clearRect(0, 0, w, h);
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(w / 2, h / 2 - 4, r, 0, Math.PI * 2);
-        ctx.clip();
-        ctx.drawImage(img, w / 2 - r, h / 2 - 4 - r, r * 2, r * 2);
-        ctx.restore();
-        ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(w / 2, h / 2 - 4, r, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.fillStyle = '#fff';
-        ctx.font = 'bold 11px sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'top';
-        ctx.fillText(name, w / 2, h - 14);
-      };
-      img.src = '/textures/rainbow.png';
-      return;
-    }
-
-    ctx.beginPath();
-    ctx.arc(w / 2, h / 2 - 4, r, 0, Math.PI * 2);
-    ctx.fillStyle = color;
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    ctx.fillStyle = '#fff';
-    ctx.font = 'bold 11px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'top';
-    ctx.fillText(name, w / 2, h - 14);
+    const img = new Image();
+    img.onload = () => {
+      ctx.clearRect(0, 0, w, h);
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.clip();
+      ctx.drawImage(img, cx - r, cy - r, r * 2, r * 2);
+      ctx.restore();
+      ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 11px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'top';
+      ctx.fillText(data.name, cx, h - 14);
+    };
+    img.src = `/textures/${data.texture}`;
   }
 
   setCurrentFruit(level) {
