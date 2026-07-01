@@ -592,7 +592,7 @@ export class Game {
   }
 
   _randomLevel() {
-    if (Math.random() < 0.01) return RAINBOW_LEVEL;
+    if (Math.random() < 0.003) return RAINBOW_LEVEL;
     return Math.floor(Math.random() * (MAX_DROP_LEVEL + 1));
   }
 

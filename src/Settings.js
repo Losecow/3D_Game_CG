@@ -164,6 +164,7 @@ export class Settings {
   // ─────── 버튼 동기화 ───────
   _syncSplitUI(active) {
     document.getElementById('splitview-btn').classList.toggle('active', active);
+    document.body.classList.toggle('split-active', active);
     const btn = document.getElementById('settings-splitview-toggle');
     btn.textContent = active ? 'ON' : 'OFF';
     btn.classList.toggle('toggle-on', active);
