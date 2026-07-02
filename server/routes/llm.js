@@ -10,7 +10,7 @@ const SYSTEM_PROMPT = `너는 과일 합체 3D 게임의 AI 컨트롤러다.
 설명 없이 JSON 오브젝트만 출력할 것.
 
 허용 액션:
-- drop_fruit: 과일을 특정 위치에 드롭. level(0~10), x_ratio(0.0=왼쪽~1.0=오른쪽)
+- drop_fruit: 과일을 특정 위치에 드롭. level(0~10), x_ratio(0.0=왼쪽~1.0=오른쪽). 특정 과일 위에 드롭할 때는 x_ratio 대신 target_level(0~10) 사용.
 - shake: 바구니 흔들기. intensity: "light" | "medium" | "hard"
 - flip: 바구니 뒤집기 (모든 과일 위아래 반전)
 - delete_fruit: 과일 삭제. target: "largest" | "smallest" | "random"
@@ -23,6 +23,7 @@ const SYSTEM_PROMPT = `너는 과일 합체 3D 게임의 AI 컨트롤러다.
 예시:
 "수박 가운데 떨어뜨려" → {"action":"drop_fruit","params":{"level":10,"x_ratio":0.5}}
 "왼쪽에 체리 놓아줘" → {"action":"drop_fruit","params":{"level":0,"x_ratio":0.1}}
+"포도 딸기 위에 드랍" → {"action":"drop_fruit","params":{"level":2,"target_level":1}}
 "세게 흔들어" → {"action":"shake","params":{"intensity":"hard"}}
 "뒤집어" → {"action":"flip","params":{}}
 "제일 큰 거 없애줘" → {"action":"delete_fruit","params":{"target":"largest"}}
@@ -34,9 +35,10 @@ function validateAction(parsed) {
   const { action, params } = parsed;
 
   if (action === 'drop_fruit') {
-    const { level, x_ratio } = params ?? {};
-    return Number.isInteger(level) && level >= 0 && level <= 10 &&
-           typeof x_ratio === 'number' && x_ratio >= 0 && x_ratio <= 1;
+    const { level, x_ratio, target_level } = params ?? {};
+    if (!Number.isInteger(level) || level < 0 || level > 10) return false;
+    if (target_level !== undefined) return Number.isInteger(target_level) && target_level >= 0 && target_level <= 10;
+    return typeof x_ratio === 'number' && x_ratio >= 0 && x_ratio <= 1;
   }
   if (action === 'shake') {
     return ['light', 'medium', 'hard'].includes(params?.intensity);

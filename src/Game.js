@@ -348,11 +348,17 @@ export class Game {
     }
   }
 
-  _llmDropFruit({ level, x_ratio }) {
-    const savedLevel = this._currentLevel;
+  _llmDropFruit({ level, x_ratio, target_level }) {
     this._currentLevel = level;
     const hw = this._gameContainer.width / 2 - FRUIT_DATA[level].radius;
-    const x = (x_ratio * 2 - 1) * hw;
+    let x;
+    if (target_level !== undefined) {
+      const target = this._fruits.find(f => f.level === target_level);
+      if (!target) return { ok: false, reason: `${FRUIT_DATA[target_level]?.name ?? '해당 과일'}이 없습니다.` };
+      x = Math.max(-hw, Math.min(hw, target.body.position.x));
+    } else {
+      x = (x_ratio * 2 - 1) * hw;
+    }
     this._dropFruit(new THREE.Vector3(x, 0, 0));
     return { ok: true };
   }
