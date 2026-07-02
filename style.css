@@ -454,6 +454,22 @@ body.split-active #splitview-btn {
 
 #google-signin-btn.hidden { display: none; }
 
+/* 탑다운 뷰 방향 레이블 */
+.topdown-label {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.05em;
+  pointer-events: none;
+  z-index: 5;
+  writing-mode: horizontal-tb;
+}
+
+#topdown-label-left  { left: 10px; }
+#topdown-label-right { left: calc(60vw - 60px); }
+
 /* AI 명령 패널 */
 #llm-panel {
   position: fixed;
