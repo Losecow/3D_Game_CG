@@ -29,10 +29,14 @@ const ACTION_LABELS = {
   spawn_rainbow: ()  => '🌈 레인보우 과일 소환!',
 };
 
+let _llmBusy = false;
+
 async function sendLLMCommand() {
+  if (_llmBusy) return;
   const text = llmInput.value.trim();
   if (!text) return;
 
+  _llmBusy = true;
   llmBtn.disabled = true;
   llmFeedback.className = '';
   llmFeedback.textContent = '생각 중...';
@@ -65,10 +69,11 @@ async function sendLLMCommand() {
     llmFeedback.className = 'err';
     llmFeedback.textContent = `❌ 오류: ${e.message}`;
   } finally {
+    _llmBusy = false;
     llmBtn.disabled = false;
     llmInput.focus();
   }
 }
 
 llmBtn.addEventListener('click', sendLLMCommand);
-llmInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendLLMCommand(); });
+llmInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); sendLLMCommand(); } });
