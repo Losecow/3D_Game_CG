@@ -11,49 +11,52 @@
     <!-- Three.js 캔버스 -->
     <div id="canvas-container"></div>
 
-    <!-- 유저 정보 + 설정 버튼 (좌상단) -->
-    <div id="auth-panel">
-      <div id="user-info" class="hidden">
-        <img id="user-avatar" src="" alt="" />
-        <span id="user-name"></span>
-        <button id="nickname-edit-btn" title="닉네임 변경">✏️</button>
-        <button id="logout-btn">로그아웃</button>
+    <!-- 상단 HUD 래퍼 (분할 뷰에서 수평 바로 전환) -->
+    <div id="hud-top">
+      <!-- 유저 정보 + 설정 버튼 -->
+      <div id="auth-panel">
+        <div id="user-info" class="hidden">
+          <img id="user-avatar" src="" alt="" />
+          <span id="user-name"></span>
+          <button id="nickname-edit-btn" title="닉네임 변경">✏️</button>
+          <button id="logout-btn">로그아웃</button>
+        </div>
+        <button id="settings-btn">⚙️</button>
       </div>
-      <button id="settings-btn">⚙️</button>
+
+      <!-- 점수 / 다음 과일 UI -->
+      <div id="ui">
+        <div id="score-panel">
+          <div class="score-label">점수 / SCORE</div>
+          <div id="score">0</div>
+          <div class="score-label">최고 점수 / BEST</div>
+          <div id="best-score">0</div>
+        </div>
+
+        <div id="next-panel">
+          <div id="fruit-previews">
+            <div class="fruit-preview-col">
+              <div class="score-label">현재 / NOW</div>
+              <canvas id="current-fruit-preview" width="72" height="72"></canvas>
+            </div>
+            <div class="preview-arrow">▶</div>
+            <div class="fruit-preview-col">
+              <div class="score-label">다음 / NEXT</div>
+              <canvas id="next-fruit-preview" width="52" height="52"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <button id="camera-btn">📷 커스텀</button>
+        <button id="shop-btn">🍉 상점</button>
+        <button id="leaderboard-btn">🏆 리더보드</button>
+        <button id="splitview-btn">⊞ 분할 뷰</button>
+      </div>
     </div>
 
     <!-- 구글 로그인 (우하단) -->
     <div id="signin-area">
       <div id="google-signin-btn"></div>
-    </div>
-
-    <!-- 점수 / 다음 과일 UI (우상단) -->
-    <div id="ui">
-      <div id="score-panel">
-        <div class="score-label">점수 / SCORE</div>
-        <div id="score">0</div>
-        <div class="score-label">최고 점수 / BEST</div>
-        <div id="best-score">0</div>
-      </div>
-
-      <div id="next-panel">
-        <div id="fruit-previews">
-          <div class="fruit-preview-col">
-            <div class="score-label">현재 / NOW</div>
-            <canvas id="current-fruit-preview" width="72" height="72"></canvas>
-          </div>
-          <div class="preview-arrow">▶</div>
-          <div class="fruit-preview-col">
-            <div class="score-label">다음 / NEXT</div>
-            <canvas id="next-fruit-preview" width="52" height="52"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <button id="camera-btn">📷 커스텀</button>
-      <button id="shop-btn">🍉 상점</button>
-      <button id="leaderboard-btn">🏆 리더보드</button>
-      <button id="splitview-btn">⊞ 분할 뷰</button>
     </div>
 
     <!-- 게임 오버 화면 -->

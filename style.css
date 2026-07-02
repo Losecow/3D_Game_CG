@@ -26,7 +26,17 @@ body {
   display: block;
 }
 
-/* UI 오버레이 / UI overlay */
+/* 상단 HUD 래퍼 */
+#hud-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* UI 오버레이 */
 #ui {
   position: fixed;
   top: 20px;
@@ -35,14 +45,63 @@ body {
   flex-direction: column;
   gap: 12px;
   pointer-events: none;
-  z-index: 10;
-  transition: top 0.2s, right 0.2s, left 0.2s;
+}
+
+/* 분할 뷰: hud-top이 좌측 60% 수평 바로 전환 */
+body.split-active #hud-top {
+  right: auto;
+  width: 60vw;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: all;
+}
+
+body.split-active #auth-panel {
+  position: static;
+  flex-shrink: 0;
 }
 
 body.split-active #ui {
-  right: auto;
-  left: 20px;
+  position: static;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+  pointer-events: all;
 }
+
+/* 분할 뷰: 스코어 패널 컴팩트 */
+body.split-active #score-panel {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  min-width: auto;
+  text-align: left;
+}
+
+body.split-active #score-panel .score-label { margin-bottom: 0; }
+
+body.split-active #score,
+body.split-active #best-score {
+  font-size: 1.1rem;
+  margin-bottom: 0;
+}
+
+/* 분할 뷰: 과일 프리뷰 패널 컴팩트 */
+body.split-active #next-panel {
+  padding: 6px 10px;
+}
+
+body.split-active #current-fruit-preview { width: 44px; height: 44px; }
+body.split-active #next-fruit-preview    { width: 34px; height: 34px; }
 
 #score-panel,
 #next-panel {
