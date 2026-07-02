@@ -61,15 +61,16 @@ body.split-active #hud-top {
   pointer-events: none;
 }
 
-/* auth-panel → 1열 2행: 유저정보 + 설정버튼 나란히 */
+/* auth-panel → 좌하단 고정 */
 body.split-active #auth-panel {
-  position: static;
-  grid-column: 1;
-  grid-row: 2;
-  pointer-events: all;
+  position: fixed;
+  top: auto;
+  bottom: 20px;
+  left: 20px;
   display: flex;
   align-items: center;
   gap: 8px;
+  pointer-events: all;
 }
 
 /* ui 자체는 투명하게, 자식들이 그리드 아이템으로 직접 참여 */
