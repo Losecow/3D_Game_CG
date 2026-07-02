@@ -349,8 +349,10 @@ export class Game {
   }
 
   _llmDropFruit({ level, x_ratio, target_level }) {
-    this._currentLevel = level;
-    const hw = this._gameContainer.width / 2 - FRUIT_DATA[level].radius;
+    const useLevel = (level !== null && level !== undefined) ? level : this._currentLevel;
+    if (level !== null && level !== undefined) this._currentLevel = useLevel;
+    const data = useLevel === RAINBOW_LEVEL ? RAINBOW_DATA : FRUIT_DATA[useLevel];
+    const hw = this._gameContainer.width / 2 - data.radius;
     let x;
     if (target_level !== undefined) {
       const target = this._fruits.find(f => f.level === target_level);

@@ -11,7 +11,7 @@ const SYSTEM_PROMPT = `너는 과일 합체 3D 게임의 AI 컨트롤러다.
 한 번에 과일 1개만 드롭 가능하다. 수량을 지정하는 명령(예: "2개", "세 개", "다섯개" 등)은 반드시 none으로 거부하고, reason에 "한 번에 과일 1개만 드롭할 수 있어요."라고 안내할 것.
 
 허용 액션:
-- drop_fruit: 과일을 특정 위치에 드롭. level(0~10), x_ratio(0.0=왼쪽~1.0=오른쪽). 특정 과일 위에 드롭할 때는 x_ratio 대신 target_level(0~10) 사용.
+- drop_fruit: 과일을 특정 위치에 드롭. x_ratio(0.0=왼쪽~1.0=오른쪽). 과일 종류를 명시한 경우에만 level(0~10) 포함, 명시하지 않으면 level 생략. 특정 과일 위에 드롭할 때는 x_ratio 대신 target_level(0~10) 사용.
 - shake: 바구니 흔들기. intensity: "light" | "medium" | "hard"
 - flip: 바구니 뒤집기 (모든 과일 위아래 반전)
 - delete_fruit: 과일 삭제. target: "largest" | "smallest" | "random"
@@ -24,6 +24,8 @@ const SYSTEM_PROMPT = `너는 과일 합체 3D 게임의 AI 컨트롤러다.
 예시:
 "수박 가운데 떨어뜨려" → {"action":"drop_fruit","params":{"level":10,"x_ratio":0.5}}
 "왼쪽에 체리 놓아줘" → {"action":"drop_fruit","params":{"level":0,"x_ratio":0.1}}
+"왼쪽에 떨어뜨려" → {"action":"drop_fruit","params":{"x_ratio":0.2}}
+"오른쪽에 드롭해" → {"action":"drop_fruit","params":{"x_ratio":0.8}}
 "포도 딸기 위에 드랍" → {"action":"drop_fruit","params":{"level":2,"target_level":1}}
 "세게 흔들어" → {"action":"shake","params":{"intensity":"hard"}}
 "뒤집어" → {"action":"flip","params":{}}
@@ -38,7 +40,7 @@ function validateAction(parsed) {
 
   if (action === 'drop_fruit') {
     const { level, x_ratio, target_level } = params ?? {};
-    if (!Number.isInteger(level) || level < 0 || level > 10) return false;
+    if (level !== undefined && level !== null && (!Number.isInteger(level) || level < 0 || level > 10)) return false;
     if (target_level !== undefined) return Number.isInteger(target_level) && target_level >= 0 && target_level <= 10;
     return typeof x_ratio === 'number' && x_ratio >= 0 && x_ratio <= 1;
   }
