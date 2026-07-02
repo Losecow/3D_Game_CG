@@ -440,7 +440,7 @@ export class Game {
 
     // 스페이스바 드롭 / Spacebar drop
     window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && !e.repeat) {
+      if (e.code === 'Space' && !e.repeat && document.activeElement?.tagName !== 'INPUT') {
         e.preventDefault();
         if (this._dropMode === 'space' && !this._isGameOver && !this._dropCooldown && !this._isAnyModalOpen() && this._lastDropPos) {
           this._dropFruit(this._lastDropPos);
