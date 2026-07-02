@@ -61,7 +61,7 @@ router.post('/command', async (req, res) => {
   try {
     const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-flash-lite-latest',
       contents: `${SYSTEM_PROMPT}\n\n사용자 명령: "${text.trim()}"`,
     });
 
