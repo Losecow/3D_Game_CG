@@ -56,9 +56,6 @@ body.split-active #hud-top {
   align-items: center;
   gap: 10px;
   padding: 10px 14px;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   pointer-events: all;
 }
 
@@ -76,14 +73,16 @@ body.split-active #ui {
   pointer-events: all;
 }
 
-/* 분할 뷰: 스코어 패널 컴팩트 */
+/* 분할 뷰: 스코어 패널 컴팩트 — 배경 제거, 내용에 맞게 */
 body.split-active #score-panel {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
-  padding: 6px 12px;
+  gap: 8px;
+  padding: 0;
   min-width: auto;
+  background: none;
+  border: none;
   text-align: left;
 }
 
@@ -95,9 +94,11 @@ body.split-active #best-score {
   margin-bottom: 0;
 }
 
-/* 분할 뷰: 과일 프리뷰 패널 컴팩트 */
+/* 분할 뷰: 과일 프리뷰 패널 컴팩트 — 배경 제거 */
 body.split-active #next-panel {
-  padding: 6px 10px;
+  padding: 0;
+  background: none;
+  border: none;
 }
 
 body.split-active #current-fruit-preview { width: 44px; height: 44px; }
