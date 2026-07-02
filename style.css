@@ -469,8 +469,8 @@ body.split-active #splitview-btn {
   z-index: 15;
 }
 
-#topdown-label-left  { left: 10px; }
-#topdown-label-right { left: calc(60vw - 72px); }
+#topdown-label-left  { left: 6vw; }
+#topdown-label-right { left: calc(54vw - 72px); }
 
 /* AI 명령 패널 */
 #llm-panel {
