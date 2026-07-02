@@ -460,15 +460,17 @@ body.split-active #splitview-btn {
   top: 50%;
   transform: translateY(-50%);
   font-size: 0.75rem;
-  color: rgba(255, 255, 255, 0.45);
+  color: #fff;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 8px;
+  padding: 4px 10px;
   letter-spacing: 0.05em;
   pointer-events: none;
-  z-index: 5;
-  writing-mode: horizontal-tb;
+  z-index: 15;
 }
 
 #topdown-label-left  { left: 10px; }
-#topdown-label-right { left: calc(60vw - 60px); }
+#topdown-label-right { left: calc(60vw - 72px); }
 
 /* AI 명령 패널 */
 #llm-panel {
