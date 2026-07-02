@@ -55,8 +55,9 @@ body.split-active #hud-top {
   grid-template-columns: auto auto auto auto;
   grid-template-rows: auto auto;
   align-items: center;
+  justify-content: start;
   gap: 6px 10px;
-  padding: 10px 14px;
+  padding: 8px 14px;
   pointer-events: none;
 }
 
@@ -66,7 +67,21 @@ body.split-active #auth-panel {
   grid-column: 1;
   grid-row: 2;
   pointer-events: all;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
+
+/* user-info 컴팩트 */
+body.split-active #user-info {
+  padding: 4px 10px 4px 4px;
+  gap: 5px;
+}
+
+body.split-active #user-avatar  { width: 22px; height: 22px; }
+body.split-active #user-name    { font-size: 0.75rem; max-width: 70px; }
+body.split-active #logout-btn   { font-size: 0.65rem; padding: 2px 7px; }
+body.split-active #nickname-edit-btn { font-size: 0.7rem; }
 
 /* ui 자체는 투명하게, 자식들이 그리드 아이템으로 직접 참여 */
 body.split-active #ui {
@@ -74,41 +89,53 @@ body.split-active #ui {
   display: contents;
 }
 
-/* 점수 → 1열 1행 */
+/* 점수 → 1열 1행, 컴팩트 */
 body.split-active #score-panel {
   grid-column: 1;
   grid-row: 1;
   min-width: auto;
   padding: 6px 12px;
-  text-align: center;
   pointer-events: none;
 }
 
 body.split-active #score,
 body.split-active #best-score {
   font-size: 1.1rem;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
+
+body.split-active #score-panel .score-label { font-size: 0.55rem; margin-bottom: 2px; }
 
 /* 현재/다음 과일 → 2열 전체 (1~2행) */
 body.split-active #next-panel {
   grid-column: 2;
   grid-row: 1 / 3;
-  padding: 8px 12px;
+  padding: 6px 10px;
+  align-self: center;
   pointer-events: none;
 }
 
-body.split-active #current-fruit-preview { width: 44px; height: 44px; }
-body.split-active #next-fruit-preview    { width: 34px; height: 34px; }
+body.split-active #current-fruit-preview { width: 42px; height: 42px; }
+body.split-active #next-fruit-preview    { width: 32px; height: 32px; }
+
+/* 버튼들: width auto, 컴팩트 padding */
+body.split-active #camera-btn,
+body.split-active #shop-btn,
+body.split-active #leaderboard-btn,
+body.split-active #splitview-btn {
+  width: auto;
+  padding: 7px 12px;
+  font-size: 0.75rem;
+}
 
 /* 커스텀 → 3열 1행 */
-body.split-active #camera-btn    { grid-column: 3; grid-row: 1; pointer-events: all; }
+body.split-active #camera-btn      { grid-column: 3; grid-row: 1; pointer-events: all; }
 /* 상점 → 3열 2행 */
-body.split-active #shop-btn      { grid-column: 3; grid-row: 2; pointer-events: all; }
+body.split-active #shop-btn        { grid-column: 3; grid-row: 2; pointer-events: all; }
 /* 리더보드 → 4열 1행 */
 body.split-active #leaderboard-btn { grid-column: 4; grid-row: 1; pointer-events: all; }
 /* 분할뷰 → 4열 2행 */
-body.split-active #splitview-btn { grid-column: 4; grid-row: 2; pointer-events: all; }
+body.split-active #splitview-btn   { grid-column: 4; grid-row: 2; pointer-events: all; }
 
 #score-panel,
 #next-panel {
