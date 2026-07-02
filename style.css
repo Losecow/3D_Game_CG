@@ -53,7 +53,6 @@ body.split-active #hud-top {
   width: 60vw;
   display: grid;
   grid-template-columns: auto auto auto auto;
-  grid-template-rows: auto auto;
   align-items: start;
   justify-content: start;
   gap: 8px 12px;
@@ -94,22 +93,24 @@ body.split-active #next-panel {
   pointer-events: none;
 }
 
-/* 버튼들: width auto */
+/* 버튼 그룹: 세로로 붙여서 배치 */
+body.split-active .btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: all;
+}
+
+body.split-active .btn-group:nth-child(3) { grid-column: 3; grid-row: 1; }
+body.split-active .btn-group:nth-child(4) { grid-column: 4; grid-row: 1; }
+
 body.split-active #camera-btn,
 body.split-active #shop-btn,
 body.split-active #leaderboard-btn,
 body.split-active #splitview-btn {
   width: auto;
+  pointer-events: all;
 }
-
-/* 커스텀 → 3열 1행 */
-body.split-active #camera-btn      { grid-column: 3; grid-row: 1; pointer-events: all; }
-/* 상점 → 3열 2행 */
-body.split-active #shop-btn        { grid-column: 3; grid-row: 2; pointer-events: all; }
-/* 리더보드 → 4열 1행 */
-body.split-active #leaderboard-btn { grid-column: 4; grid-row: 1; pointer-events: all; }
-/* 분할뷰 → 4열 2행 */
-body.split-active #splitview-btn   { grid-column: 4; grid-row: 2; pointer-events: all; }
 
 #score-panel,
 #next-panel {
