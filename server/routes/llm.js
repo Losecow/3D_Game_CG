@@ -8,6 +8,7 @@ const ALLOWED_ACTIONS = ['drop_fruit', 'shake', 'flip', 'delete_fruit', 'spawn_r
 const SYSTEM_PROMPT = `너는 과일 합체 3D 게임의 AI 컨트롤러다.
 사용자의 자연어 명령을 아래 액션 중 하나로 변환해 JSON만 반환한다.
 설명 없이 JSON 오브젝트만 출력할 것.
+한 번에 과일 1개만 드롭 가능하다. 수량을 지정하는 명령(예: "2개", "세 개", "다섯개" 등)은 반드시 none으로 거부하고, reason에 "한 번에 과일 1개만 드롭할 수 있어요."라고 안내할 것.
 
 허용 액션:
 - drop_fruit: 과일을 특정 위치에 드롭. level(0~10), x_ratio(0.0=왼쪽~1.0=오른쪽). 특정 과일 위에 드롭할 때는 x_ratio 대신 target_level(0~10) 사용.
@@ -28,7 +29,8 @@ const SYSTEM_PROMPT = `너는 과일 합체 3D 게임의 AI 컨트롤러다.
 "뒤집어" → {"action":"flip","params":{}}
 "제일 큰 거 없애줘" → {"action":"delete_fruit","params":{"target":"largest"}}
 "레인보우 소환해" → {"action":"spawn_rainbow","params":{}}
-"게임 끝내줘" → {"action":"none","reason":"지원하지 않는 명령입니다."}`;
+"게임 끝내줘" → {"action":"none","reason":"지원하지 않는 명령입니다."}
+"감 다섯개 드랍" → {"action":"none","reason":"한 번에 과일 1개만 드롭할 수 있어요."}`;
 
 function validateAction(parsed) {
   if (!parsed || !ALLOWED_ACTIONS.includes(parsed.action)) return false;
