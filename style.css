@@ -93,7 +93,10 @@ body.split-active #next-panel {
   pointer-events: none;
 }
 
-/* 버튼 그룹: 세로로 붙여서 배치 */
+/* 일반 모드: 그룹 래퍼 투명 처리 */
+.btn-group { display: contents; }
+
+/* 분할 뷰: 세로로 붙여서 배치 */
 body.split-active .btn-group {
   display: flex;
   flex-direction: column;
