@@ -348,20 +348,23 @@ export class Game {
     }
   }
 
-  _llmDropFruit({ level, x_ratio, target_level }) {
+  _llmDropFruit({ level, x_ratio, z_ratio, target_level }) {
     const useLevel = (level !== null && level !== undefined) ? level : this._currentLevel;
     if (level !== null && level !== undefined) this._currentLevel = useLevel;
     const data = useLevel === RAINBOW_LEVEL ? RAINBOW_DATA : FRUIT_DATA[useLevel];
     const hw = this._gameContainer.width / 2 - data.radius;
-    let x;
+    const hd = this._gameContainer.depth / 2 - data.radius;
+    let x, z;
     if (target_level !== undefined) {
       const target = this._fruits.find(f => f.level === target_level);
       if (!target) return { ok: false, reason: `${FRUIT_DATA[target_level]?.name ?? '해당 과일'}이 없습니다.` };
       x = Math.max(-hw, Math.min(hw, target.body.position.x));
+      z = Math.max(-hd, Math.min(hd, target.body.position.z));
     } else {
       x = (x_ratio * 2 - 1) * hw;
+      z = z_ratio !== undefined ? (z_ratio * 2 - 1) * hd : 0;
     }
-    this._dropFruit(new THREE.Vector3(x, 0, 0));
+    this._dropFruit(new THREE.Vector3(x, 0, z));
     return { ok: true };
   }
 

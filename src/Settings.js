@@ -165,8 +165,8 @@ export class Settings {
   _syncSplitUI(active) {
     document.getElementById('splitview-btn').classList.toggle('active', active);
     document.body.classList.toggle('split-active', active);
-    document.getElementById('topdown-label-left').classList.toggle('hidden', !active);
-    document.getElementById('topdown-label-right').classList.toggle('hidden', !active);
+    ['topdown-label-left','topdown-label-right','topdown-label-top','topdown-label-bottom']
+      .forEach(id => document.getElementById(id).classList.toggle('hidden', !active));
     const btn = document.getElementById('settings-splitview-toggle');
     btn.textContent = active ? 'ON' : 'OFF';
     btn.classList.toggle('toggle-on', active);
