@@ -335,6 +335,73 @@ export class Game {
     this.exitDeleteMode();
   }
 
+  /** LLM 액션 실행 */
+  executeAction({ action, params }) {
+    if (this._isGameOver) return { ok: false, reason: '게임 오버 상태입니다.' };
+    switch (action) {
+      case 'drop_fruit': return this._llmDropFruit(params);
+      case 'shake':      return this._llmShake(params);
+      case 'flip':       return this._llmFlip();
+      case 'delete_fruit': return this._llmDeleteFruit(params);
+      case 'spawn_rainbow': return this._llmSpawnRainbow();
+      default: return { ok: false, reason: '알 수 없는 액션' };
+    }
+  }
+
+  _llmDropFruit({ level, x_ratio }) {
+    const savedLevel = this._currentLevel;
+    this._currentLevel = level;
+    const hw = this._gameContainer.width / 2 - FRUIT_DATA[level].radius;
+    const x = (x_ratio * 2 - 1) * hw;
+    this._dropFruit(new THREE.Vector3(x, 0, 0));
+    return { ok: true };
+  }
+
+  _llmShake({ intensity }) {
+    const strengths = { light: 20, medium: 50, hard: 90 };
+    const strength = strengths[intensity] ?? 50;
+    this._mergeGrace = 4000;
+    this._fruits.forEach(f => {
+      const impulse = new CANNON.Vec3(
+        (Math.random() - 0.5) * strength,
+        Math.random() * strength * 0.5,
+        (Math.random() - 0.5) * strength
+      );
+      f.body.applyImpulse(impulse);
+      f.body.wakeUp();
+    });
+    return { ok: true };
+  }
+
+  _llmFlip() {
+    if (this._fruits.length === 0) return { ok: false, reason: '과일이 없습니다.' };
+    this.flip();
+    this._flipUsed = false; // LLM 사용은 상점 제한과 무관
+    return { ok: true };
+  }
+
+  _llmDeleteFruit({ target }) {
+    if (this._fruits.length === 0) return { ok: false, reason: '과일이 없습니다.' };
+    let idx;
+    if (target === 'largest') {
+      idx = this._fruits.reduce((mi, f, i) => f.data.radius > this._fruits[mi].data.radius ? i : mi, 0);
+    } else if (target === 'smallest') {
+      idx = this._fruits.reduce((mi, f, i) => f.data.radius < this._fruits[mi].data.radius ? i : mi, 0);
+    } else {
+      idx = Math.floor(Math.random() * this._fruits.length);
+    }
+    const fruit = this._fruits.splice(idx, 1)[0];
+    fruit.destroy();
+    return { ok: true };
+  }
+
+  _llmSpawnRainbow() {
+    const savedLevel = this._currentLevel;
+    this._currentLevel = RAINBOW_LEVEL;
+    this._dropFruit(new THREE.Vector3(0, 0, 0));
+    return { ok: true };
+  }
+
   /** 분할 뷰 토글 / Toggle split view */
   toggleSplitView() {
     this._splitView = !this._splitView;

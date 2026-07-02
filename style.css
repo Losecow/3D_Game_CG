@@ -383,6 +383,76 @@ body.split-active #ui {
 
 #google-signin-btn.hidden { display: none; }
 
+/* AI 명령 패널 */
+#llm-panel {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 20;
+  min-width: 340px;
+  max-width: 480px;
+  backdrop-filter: blur(8px);
+}
+
+#llm-header {
+  font-size: 0.7rem;
+  color: #aaa;
+  letter-spacing: 0.05em;
+}
+
+#llm-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+#llm-input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  color: #fff;
+  font-size: 0.9rem;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#llm-input:focus { border-color: rgba(100, 200, 255, 0.6); }
+#llm-input::placeholder { color: rgba(255, 255, 255, 0.35); }
+
+#llm-send-btn {
+  background: rgba(100, 200, 255, 0.2);
+  border: 1px solid rgba(100, 200, 255, 0.4);
+  border-radius: 10px;
+  color: #88ddff;
+  font-size: 0.85rem;
+  padding: 8px 16px;
+  cursor: pointer;
+  pointer-events: all;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+#llm-send-btn:hover { background: rgba(100, 200, 255, 0.35); }
+#llm-send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+#llm-feedback {
+  font-size: 0.8rem;
+  color: #88ddff;
+  min-height: 1.1em;
+  text-align: center;
+}
+
+#llm-feedback.err { color: #ff8888; }
+
 /* 구글 로그인 (우하단) / Sign-in area (bottom-right) */
 #signin-area {
   position: fixed;

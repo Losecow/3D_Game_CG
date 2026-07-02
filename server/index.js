@@ -13,6 +13,7 @@ app.use('/api',          require('./routes/scores'));
 app.use('/api/feedback', require('./routes/feedback'));
 app.use('/api/shop',     require('./routes/shop'));
 app.use('/api/admin',    require('./routes/admin'));
+app.use('/api/llm',      require('./routes/llm'));
 app.get('/api/health', (_, res) => res.json({ ok: true }));
 
 // 프론트엔드 정적 파일 서빙 (빌드된 dist/)
