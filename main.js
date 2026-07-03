@@ -22,7 +22,11 @@ const llmBtn    = document.getElementById('llm-send-btn');
 const llmFeedback = document.getElementById('llm-feedback');
 
 const ACTION_LABELS = {
-  drop_fruit:    (p) => `🍎 ${['체리','딸기','포도','귤','감','사과','배','복숭아','파인애플','멜론','수박'][p.level]} 드롭!`,
+  drop_fruit:    (p) => {
+    const NAMES = ['체리','딸기','포도','귤','감','사과','배','복숭아','파인애플','멜론','수박'];
+    const name = p.level !== undefined ? (NAMES[p.level] ?? '과일') : '과일';
+    return `🍎 ${name} 드롭!`;
+  },
   shake:         (p) => ({ light:'살살', medium:'흔들흔들', hard:'세게' }[p.intensity] ?? '') + ' 흔들었어요!',
   flip:          ()  => '뒤집었어요!',
   delete_fruit:  (p) => ({ largest:'가장 큰', smallest:'가장 작은', random:'랜덤' }[p.target]) + ' 과일 삭제!',

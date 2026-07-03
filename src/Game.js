@@ -349,6 +349,9 @@ export class Game {
   }
 
   _llmDropFruit({ level, x_ratio, z_ratio, target_level }) {
+    if (level !== null && level !== undefined && level > 4) {
+      return { ok: false, reason: '체리~감(레벨 0~4)만 소환할 수 있어요.' };
+    }
     const useLevel = (level !== null && level !== undefined) ? level : this._currentLevel;
     if (level !== null && level !== undefined) this._currentLevel = useLevel;
     const data = useLevel === RAINBOW_LEVEL ? RAINBOW_DATA : FRUIT_DATA[useLevel];
