@@ -1,6 +1,7 @@
 const LS = {
-  volume:   's3d_volume',
-  dropMode: 's3d_dropmode',
+  volume:        's3d_volume',
+  dropMode:      's3d_dropmode',
+  directionGuide: 's3d_dirguide',
 };
 
 export class Settings {
@@ -9,8 +10,9 @@ export class Settings {
     this._sound = sound;
     this._auth  = auth;
 
-    this._volume   = parseFloat(localStorage.getItem(LS.volume)   ?? '0.5');
-    this._dropMode = localStorage.getItem(LS.dropMode) ?? 'click'; // 'click' | 'space'
+    this._volume         = parseFloat(localStorage.getItem(LS.volume)   ?? '0.5');
+    this._dropMode       = localStorage.getItem(LS.dropMode) ?? 'click'; // 'click' | 'space'
+    this._directionGuide = (localStorage.getItem(LS.directionGuide) ?? 'on') === 'on';
 
     this._applyAll();
     this._initModal();
@@ -27,11 +29,13 @@ export class Settings {
   _applyAll() {
     this._sound.setVolume(this._volume);
     this._game.setDropMode(this._dropMode);
+    this._applyDirectionLabels();
   }
 
   _save() {
-    localStorage.setItem(LS.volume,   this._volume);
-    localStorage.setItem(LS.dropMode, this._dropMode);
+    localStorage.setItem(LS.volume,         this._volume);
+    localStorage.setItem(LS.dropMode,       this._dropMode);
+    localStorage.setItem(LS.directionGuide, this._directionGuide ? 'on' : 'off');
   }
 
   // ─────── UI 초기화 ───────
@@ -57,6 +61,16 @@ export class Settings {
     // 분할 뷰 토글
     document.getElementById('settings-splitview-toggle').addEventListener('click', () => {
       this.handleSplitViewToggle();
+    });
+
+    // 방향 가이드 토글
+    const dirBtn = document.getElementById('settings-direction-toggle');
+    this._syncDirectionUI(dirBtn);
+    dirBtn.addEventListener('click', () => {
+      this._directionGuide = !this._directionGuide;
+      this._syncDirectionUI(dirBtn);
+      this._applyDirectionLabels();
+      this._save();
     });
 
     // 게임 종료
@@ -165,11 +179,22 @@ export class Settings {
   _syncSplitUI(active) {
     document.getElementById('splitview-btn').classList.toggle('active', active);
     document.body.classList.toggle('split-active', active);
-    ['topdown-label-left','topdown-label-right','topdown-label-top','topdown-label-bottom']
-      .forEach(id => document.getElementById(id).classList.toggle('hidden', !active));
+    document.getElementById('direction-label-row').classList.toggle('hidden', !active);
+    this._applyDirectionLabels();
     const btn = document.getElementById('settings-splitview-toggle');
     btn.textContent = active ? 'ON' : 'OFF';
     btn.classList.toggle('toggle-on', active);
+  }
+
+  _applyDirectionLabels() {
+    const show = this._game.isSplitView && this._directionGuide;
+    ['topdown-label-left','topdown-label-right','topdown-label-top','topdown-label-bottom']
+      .forEach(id => document.getElementById(id).classList.toggle('hidden', !show));
+  }
+
+  _syncDirectionUI(btn) {
+    btn.textContent = this._directionGuide ? 'ON' : 'OFF';
+    btn.classList.toggle('toggle-on', this._directionGuide);
   }
 
   _syncDropUI(clickBtn, spaceBtn, mode) {

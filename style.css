@@ -471,8 +471,8 @@ body.split-active #splitview-btn {
 
 #topdown-label-left   { left: 6vw; top: 50%; transform: translateY(-50%); }
 #topdown-label-right  { left: calc(54vw - 72px); top: 50%; transform: translateY(-50%); }
-#topdown-label-top    { top: 80px; left: 30vw; transform: translateX(-50%); }
-#topdown-label-bottom { bottom: 20px; left: 30vw; transform: translateX(-50%); }
+#topdown-label-top    { top: 110px; left: 30vw; transform: translateX(-50%); }
+#topdown-label-bottom { top: auto; bottom: 20px; left: 30vw; transform: translateX(-50%); }
 
 /* AI 명령 패널 */
 #llm-panel {
