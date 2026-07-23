@@ -1925,18 +1925,25 @@ body.split-active #splitview-btn {
   /* 분할뷰 / 방향 레이블 숨김 */
   .topdown-label { display: none !important; }
 
-  /* AI 패널 → 하단 풀 너비 */
+  /* AI 패널 → 드롭 컨트롤 위, 토글로 표시 */
   #llm-panel {
     left: 0;
     right: 0;
-    bottom: 0;
+    bottom: 0; /* JS가 동적으로 조정 */
     transform: none;
     width: 100%;
     max-width: 100%;
     min-width: 0;
     border-radius: 0;
+    border-bottom: none;
     padding: 10px 12px;
-    padding-bottom: max(10px, env(safe-area-inset-bottom));
+    transition: transform 0.25s ease, opacity 0.25s ease;
+  }
+
+  #llm-panel.m-hidden {
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
   }
 
   /* 모바일 드롭 컨트롤 표시 */
@@ -1947,33 +1954,34 @@ body.split-active #splitview-btn {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: 88px; /* llm-panel 높이 위 */
+    bottom: 0;
     padding: 10px 12px;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(8px);
+    padding-bottom: max(10px, env(safe-area-inset-bottom));
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(10px);
     border-top: 1px solid rgba(255,255,255,0.08);
-    z-index: 20;
+    z-index: 21;
   }
 
-  #mobile-pos-row {
+  #mobile-util-row {
     display: flex;
     gap: 8px;
   }
 
-  .m-pos-btn {
+  #m-ai-toggle {
     flex: 1;
     background: rgba(255,255,255,0.06);
     border: 1px solid rgba(255,255,255,0.15);
     border-radius: 10px;
     color: #aaa;
     font-size: 0.85rem;
-    padding: 10px 4px;
+    padding: 9px 8px;
     cursor: pointer;
     transition: background 0.15s, color 0.15s, border-color 0.15s;
     -webkit-tap-highlight-color: transparent;
   }
 
-  .m-pos-btn.m-pos-sel {
+  #m-ai-toggle.m-ai-on {
     background: rgba(100,200,255,0.15);
     border-color: rgba(100,200,255,0.5);
     color: #88ddff;
@@ -1988,7 +1996,7 @@ body.split-active #splitview-btn {
     color: #88ddff;
     font-size: 1.05rem;
     font-weight: 700;
-    padding: 13px;
+    padding: 14px;
     cursor: pointer;
     transition: background 0.15s;
     -webkit-tap-highlight-color: transparent;

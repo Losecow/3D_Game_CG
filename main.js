@@ -107,23 +107,36 @@ llmInput.addEventListener('keydown', (e) => {
 const isMobile = window.matchMedia('(pointer: coarse)').matches;
 
 if (isMobile) {
-  let _mobileX = 0.5;
+  const mDropBtn   = document.getElementById('m-drop-btn');
+  const mAiToggle  = document.getElementById('m-ai-toggle');
+  const llmPanel   = document.getElementById('llm-panel');
+  const mobileCtrl = document.getElementById('mobile-drop-controls');
 
-  // 초기 드롭 위치 설정 (씬 로드 후)
-  setTimeout(() => game.setMobileX(_mobileX), 200);
+  // AI 패널 초기 상태: 숨김
+  llmPanel.classList.add('m-hidden');
+  let _aiOpen = false;
 
-  const mDropBtn  = document.getElementById('m-drop-btn');
-  const mPosBtns  = document.querySelectorAll('.m-pos-btn');
+  // 드롭 컨트롤 위치 = AI 패널 높이만큼 올리기
+  const syncBottom = () => {
+    const llmH = _aiOpen ? llmPanel.offsetHeight : 0;
+    mobileCtrl.style.bottom = `${llmH}px`;
+  };
+  syncBottom();
+  new ResizeObserver(syncBottom).observe(llmPanel);
 
-  mPosBtns.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      _mobileX = parseFloat(btn.dataset.x);
-      mPosBtns.forEach(b => b.classList.toggle('m-pos-sel', b === btn));
-      game.setMobileX(_mobileX);
-    });
+  // AI 패널 토글
+  mAiToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    _aiOpen = !_aiOpen;
+    llmPanel.classList.toggle('m-hidden', !_aiOpen);
+    mAiToggle.classList.toggle('m-ai-on', _aiOpen);
+    mAiToggle.textContent = _aiOpen ? '🤖 AI 명령 ✕' : '🤖 AI 명령';
+    // 패널 열릴 때 입력창 포커스
+    if (_aiOpen) setTimeout(() => llmInput.focus(), 260);
+    setTimeout(syncBottom, 260);
   });
 
+  // 드롭 버튼
   mDropBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     if (game.mobileDropFruit()) {
@@ -132,13 +145,8 @@ if (isMobile) {
     }
   });
 
-  // 모바일에서 llm-panel 높이 변화에 따라 drop-controls 위치 동기화
-  const syncDropControlsBottom = () => {
-    const llmH = document.getElementById('llm-panel').offsetHeight;
-    document.getElementById('mobile-drop-controls').style.bottom = `${llmH}px`;
-  };
-  syncDropControlsBottom();
-  new ResizeObserver(syncDropControlsBottom).observe(document.getElementById('llm-panel'));
+  // 초기 드롭 가이드 중앙에 표시 (씬 로드 후)
+  setTimeout(() => game.setMobileX(0.5), 200);
 }
 
 

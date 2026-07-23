@@ -489,8 +489,15 @@ export class Game {
       }
     });
 
-    // 데스크탑 터치스크린 지원 (모바일은 OrbitControls 터치에 맡김)
-    if (!this._isMobile) {
+    if (this._isMobile) {
+      // 모바일: 한 손가락 드래그로 가이드 위치 조정 (OrbitControls도 동시 동작)
+      // passive:true → preventDefault 없음 → OrbitControls 터치 회전 유지
+      window.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 1) this._onMouseMove(e.touches[0]);
+      }, { passive: true });
+      // touchend 드롭 없음 — 드롭은 버튼으로만
+    } else {
+      // 데스크탑 터치스크린
       window.addEventListener('touchmove', (e) => {
         e.preventDefault();
         this._onMouseMove(e.touches[0]);
