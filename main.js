@@ -102,46 +102,16 @@ llmInput.addEventListener('keydown', (e) => {
 });
 
 
-// ── 모바일 드롭 컨트롤 ──
+// ── 모바일 드롭 FAB ──
 
-const isMobile = window.matchMedia('(pointer: coarse)').matches;
+if (window.matchMedia('(pointer: coarse)').matches) {
+  const mDropFab = document.getElementById('m-drop-fab');
 
-if (isMobile) {
-  const mDropBtn   = document.getElementById('m-drop-btn');
-  const mAiToggle  = document.getElementById('m-ai-toggle');
-  const llmPanel   = document.getElementById('llm-panel');
-  const mobileCtrl = document.getElementById('mobile-drop-controls');
-
-  // AI 패널 초기 상태: 숨김
-  llmPanel.classList.add('m-hidden');
-  let _aiOpen = false;
-
-  // 드롭 컨트롤 위치 = AI 패널 높이만큼 올리기
-  const syncBottom = () => {
-    const llmH = _aiOpen ? llmPanel.offsetHeight : 0;
-    mobileCtrl.style.bottom = `${llmH}px`;
-  };
-  syncBottom();
-  new ResizeObserver(syncBottom).observe(llmPanel);
-
-  // AI 패널 토글
-  mAiToggle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    _aiOpen = !_aiOpen;
-    llmPanel.classList.toggle('m-hidden', !_aiOpen);
-    mAiToggle.classList.toggle('m-ai-on', _aiOpen);
-    mAiToggle.textContent = _aiOpen ? '🤖 AI 명령 ✕' : '🤖 AI 명령';
-    // 패널 열릴 때 입력창 포커스
-    if (_aiOpen) setTimeout(() => llmInput.focus(), 260);
-    setTimeout(syncBottom, 260);
-  });
-
-  // 드롭 버튼
-  mDropBtn.addEventListener('click', (e) => {
+  mDropFab.addEventListener('click', (e) => {
     e.stopPropagation();
     if (game.mobileDropFruit()) {
-      mDropBtn.disabled = true;
-      setTimeout(() => { mDropBtn.disabled = false; }, 550);
+      mDropFab.disabled = true;
+      setTimeout(() => { mDropFab.disabled = false; }, 550);
     }
   });
 

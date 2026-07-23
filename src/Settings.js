@@ -2,6 +2,7 @@ const LS = {
   volume:        's3d_volume',
   dropMode:      's3d_dropmode',
   directionGuide: 's3d_dirguide',
+  llmPanel:      's3d_llmpanel',
 };
 
 export class Settings {
@@ -13,6 +14,8 @@ export class Settings {
     this._volume         = parseFloat(localStorage.getItem(LS.volume)   ?? '0.5');
     this._dropMode       = localStorage.getItem(LS.dropMode) ?? 'click'; // 'click' | 'space'
     this._directionGuide = (localStorage.getItem(LS.directionGuide) ?? 'on') === 'on';
+    const _isMobile      = window.matchMedia('(pointer: coarse)').matches;
+    this._llmPanel       = (localStorage.getItem(LS.llmPanel) ?? (_isMobile ? 'off' : 'on')) === 'on';
 
     this._applyAll();
     this._initModal();
@@ -30,12 +33,18 @@ export class Settings {
     this._sound.setVolume(this._volume);
     this._game.setDropMode(this._dropMode);
     this._applyDirectionLabels();
+    this._applyLlmPanel();
   }
 
   _save() {
     localStorage.setItem(LS.volume,         this._volume);
     localStorage.setItem(LS.dropMode,       this._dropMode);
     localStorage.setItem(LS.directionGuide, this._directionGuide ? 'on' : 'off');
+    localStorage.setItem(LS.llmPanel,       this._llmPanel       ? 'on' : 'off');
+  }
+
+  _applyLlmPanel() {
+    document.getElementById('llm-panel').classList.toggle('hidden', !this._llmPanel);
   }
 
   // ─────── UI 초기화 ───────
@@ -70,6 +79,16 @@ export class Settings {
       this._directionGuide = !this._directionGuide;
       this._syncDirectionUI(dirBtn);
       this._applyDirectionLabels();
+      this._save();
+    });
+
+    // AI 명령 패널 토글
+    const llmBtn = document.getElementById('settings-llm-toggle');
+    this._syncLlmUI(llmBtn);
+    llmBtn.addEventListener('click', () => {
+      this._llmPanel = !this._llmPanel;
+      this._syncLlmUI(llmBtn);
+      this._applyLlmPanel();
       this._save();
     });
 
@@ -200,5 +219,10 @@ export class Settings {
   _syncDropUI(clickBtn, spaceBtn, mode) {
     clickBtn.classList.toggle('active', mode === 'click');
     spaceBtn.classList.toggle('active', mode === 'space');
+  }
+
+  _syncLlmUI(btn) {
+    btn.textContent = this._llmPanel ? 'ON' : 'OFF';
+    btn.classList.toggle('toggle-on', this._llmPanel);
   }
 }

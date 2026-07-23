@@ -120,6 +120,11 @@ export class Game {
     this._controls.maxPolarAngle = Math.PI / 2 + 0.2; // 바닥 아래로 못 보게 / Prevent looking below floor
     this._controls.enableDamping = true;
     this._controls.dampingFactor = 0.08;
+
+    // 모바일: 단일 터치는 드롭 가이드 조작에만, 두 손가락만 카메라 회전
+    if (this._isMobile) {
+      this._controls.touches = { ONE: null, TWO: 4 }; // 4 = DOLLY_ROTATE
+    }
   }
 
   /** 조명 설정 / Set up lights */

@@ -1790,8 +1790,8 @@ body.split-active #splitview-btn {
 
 .viz-connector.viz-visible { opacity: 1; }
 
-/* ── 모바일 드롭 컨트롤 (데스크탑에서는 숨김) ── */
-#mobile-drop-controls { display: none; }
+/* ── 모바일 드롭 FAB (데스크탑에서는 숨김) ── */
+#m-drop-fab { display: none; }
 
 /* ── 모바일 레이아웃 ── */
 @media (max-width: 767px) {
@@ -1925,86 +1925,44 @@ body.split-active #splitview-btn {
   /* 분할뷰 / 방향 레이블 숨김 */
   .topdown-label { display: none !important; }
 
-  /* AI 패널 → 드롭 컨트롤 위, 토글로 표시 */
+  /* AI 패널 → 하단 풀 너비, 설정에서 표시/숨김 */
   #llm-panel {
     left: 0;
     right: 0;
-    bottom: 0; /* JS가 동적으로 조정 */
+    bottom: 0;
     transform: none;
     width: 100%;
     max-width: 100%;
     min-width: 0;
     border-radius: 0;
-    border-bottom: none;
-    padding: 10px 12px;
-    transition: transform 0.25s ease, opacity 0.25s ease;
-  }
-
-  #llm-panel.m-hidden {
-    transform: translateY(100%);
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  /* 모바일 드롭 컨트롤 표시 */
-  #mobile-drop-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
     padding: 10px 12px;
     padding-bottom: max(10px, env(safe-area-inset-bottom));
-    background: rgba(0, 0, 0, 0.72);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid rgba(255,255,255,0.08);
-    z-index: 21;
   }
 
-  #mobile-util-row {
-    display: flex;
-    gap: 8px;
-  }
-
-  #m-ai-toggle {
-    flex: 1;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.15);
-    border-radius: 10px;
-    color: #aaa;
-    font-size: 0.85rem;
-    padding: 9px 8px;
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s, border-color 0.15s;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  #m-ai-toggle.m-ai-on {
-    background: rgba(100,200,255,0.15);
-    border-color: rgba(100,200,255,0.5);
+  /* 드롭 FAB */
+  #m-drop-fab {
+    display: block;
+    position: fixed;
+    bottom: max(24px, env(safe-area-inset-bottom));
+    right: 18px;
+    background: rgba(10, 20, 40, 0.75);
+    border: 1px solid rgba(100, 200, 255, 0.5);
+    border-radius: 28px;
     color: #88ddff;
-    font-weight: 600;
-  }
-
-  #m-drop-btn {
-    width: 100%;
-    background: rgba(100,200,255,0.2);
-    border: 1px solid rgba(100,200,255,0.45);
-    border-radius: 12px;
-    color: #88ddff;
-    font-size: 1.05rem;
+    font-size: 1rem;
     font-weight: 700;
-    padding: 14px;
+    padding: 14px 22px;
     cursor: pointer;
-    transition: background 0.15s;
+    z-index: 21;
+    backdrop-filter: blur(10px);
     -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, transform 0.1s;
     letter-spacing: 0.04em;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
   }
 
-  #m-drop-btn:active { background: rgba(100,200,255,0.35); }
-  #m-drop-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  #m-drop-fab:active  { background: rgba(100,200,255,0.3); transform: scale(0.96); }
+  #m-drop-fab:disabled { opacity: 0.35; }
 
   /* 게임 오버 박스 */
   #game-over-box {

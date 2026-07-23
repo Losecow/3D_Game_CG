@@ -217,6 +217,11 @@
           <button id="settings-splitview-toggle" class="settings-toggle">OFF</button>
         </div>
 
+        <div class="settings-row">
+          <span class="settings-label">🤖 AI 명령</span>
+          <button id="settings-llm-toggle" class="settings-toggle">OFF</button>
+        </div>
+
         <div class="settings-row" id="direction-label-row">
           <span class="settings-label">🧭 방향 가이드</span>
           <button id="settings-direction-toggle" class="settings-toggle toggle-on">ON</button>
@@ -265,13 +270,8 @@
       Click: Drop | Drag: Rotate | Scroll: Zoom
     </div>
 
-    <!-- 모바일 드롭 컨트롤 (모바일 전용) -->
-    <div id="mobile-drop-controls">
-      <div id="mobile-util-row">
-        <button id="m-ai-toggle">🤖 AI 명령</button>
-      </div>
-      <button id="m-drop-btn">⬇ 드롭!</button>
-    </div>
+    <!-- 모바일 드롭 FAB (모바일 전용) -->
+    <button id="m-drop-fab">⬇ 드롭!</button>
 
     <!-- AI 명령 패널 -->
     <div id="llm-panel">
