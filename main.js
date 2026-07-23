@@ -102,6 +102,46 @@ llmInput.addEventListener('keydown', (e) => {
 });
 
 
+// ── 모바일 드롭 컨트롤 ──
+
+const isMobile = window.matchMedia('(pointer: coarse)').matches;
+
+if (isMobile) {
+  let _mobileX = 0.5;
+
+  // 초기 드롭 위치 설정 (씬 로드 후)
+  setTimeout(() => game.setMobileX(_mobileX), 200);
+
+  const mDropBtn  = document.getElementById('m-drop-btn');
+  const mPosBtns  = document.querySelectorAll('.m-pos-btn');
+
+  mPosBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      _mobileX = parseFloat(btn.dataset.x);
+      mPosBtns.forEach(b => b.classList.toggle('m-pos-sel', b === btn));
+      game.setMobileX(_mobileX);
+    });
+  });
+
+  mDropBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (game.mobileDropFruit()) {
+      mDropBtn.disabled = true;
+      setTimeout(() => { mDropBtn.disabled = false; }, 550);
+    }
+  });
+
+  // 모바일에서 llm-panel 높이 변화에 따라 drop-controls 위치 동기화
+  const syncDropControlsBottom = () => {
+    const llmH = document.getElementById('llm-panel').offsetHeight;
+    document.getElementById('mobile-drop-controls').style.bottom = `${llmH}px`;
+  };
+  syncDropControlsBottom();
+  new ResizeObserver(syncDropControlsBottom).observe(document.getElementById('llm-panel'));
+}
+
+
 // ── LLM 처리 과정 시각화 ──
 
 const VIZ_LS       = 'llm_viz_on';

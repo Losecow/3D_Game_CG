@@ -41,6 +41,9 @@ export class Game {
     this._deleteMode  = false;   // 과일 삭제 모드
     this._onDeleteFruit = null;
 
+    this._isMobile     = window.matchMedia('(pointer: coarse)').matches;
+    this._mobileXRatio = null;
+
     this._raycaster = new THREE.Raycaster();
     this._sound = new Sound();
 
@@ -335,6 +338,30 @@ export class Game {
     this.exitDeleteMode();
   }
 
+  /** 모바일: X 위치 드롭 가이드 업데이트 (xRatio: 0=왼쪽 ~ 1=오른쪽) */
+  setMobileX(xRatio) {
+    if (this._isGameOver) return;
+    this._mobileXRatio = xRatio;
+    const data = this._currentLevel === RAINBOW_LEVEL ? RAINBOW_DATA : FRUIT_DATA[this._currentLevel];
+    const hw = this._gameContainer.width / 2 - data.radius;
+    const x  = (xRatio * 2 - 1) * hw;
+    const spawnY = this._gameContainer.height + 1.5;
+    this._lastDropPos = new THREE.Vector3(x, 0, 0);
+    this._dropGuide.position.set(x, spawnY / 2, 0);
+    this._previewSphere.position.set(x, spawnY, 0);
+    const visible = !this._isAnyModalOpen();
+    this._dropGuide.visible    = visible;
+    this._previewSphere.visible = visible;
+  }
+
+  /** 모바일: 현재 가이드 위치에서 드롭 */
+  mobileDropFruit() {
+    if (this._isGameOver || this._dropCooldown || this._isAnyModalOpen()) return false;
+    if (!this._lastDropPos) this.setMobileX(0.5);
+    this._dropFruit(this._lastDropPos);
+    return true;
+  }
+
   /** LLM 액션 실행 */
   executeAction({ action, params }) {
     if (this._isGameOver) return { ok: false, reason: '게임 오버 상태입니다.' };
@@ -462,15 +489,17 @@ export class Game {
       }
     });
 
-    // 터치 지원 / Touch support
-    window.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      this._onMouseMove(e.touches[0]);
-    }, { passive: false });
-    window.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      this._onMouseClick(e.changedTouches[0]);
-    }, { passive: false });
+    // 데스크탑 터치스크린 지원 (모바일은 OrbitControls 터치에 맡김)
+    if (!this._isMobile) {
+      window.addEventListener('touchmove', (e) => {
+        e.preventDefault();
+        this._onMouseMove(e.touches[0]);
+      }, { passive: false });
+      window.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        this._onMouseClick(e.changedTouches[0]);
+      }, { passive: false });
+    }
   }
 
   // ─────────────────────────────── 이벤트 핸들러 ───────────────────────────────
@@ -662,6 +691,10 @@ export class Game {
       this._previewGlow = null;
     }
     this._initPreviewSphere();
+    // 모바일: 드롭 후 가이드 위치 복원
+    if (this._isMobile && this._mobileXRatio !== null) {
+      this.setMobileX(this._mobileXRatio);
+    }
   }
 
   // ─────────────────────────────── 점수 / 상태 ───────────────────────────────
