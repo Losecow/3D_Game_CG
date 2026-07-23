@@ -494,6 +494,9 @@ body.split-active #splitview-btn {
 }
 
 #llm-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-size: 0.7rem;
   color: #aaa;
   letter-spacing: 0.05em;
@@ -1466,6 +1469,326 @@ body.split-active #splitview-btn {
   min-height: 18px;
   margin: 0;
 }
+
+/* ── LLM 처리 과정 시각화 ── */
+
+#llm-viz-toggle {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: #555;
+  font-size: 0.78rem;
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+
+#llm-viz-toggle:hover { border-color: rgba(255, 255, 255, 0.3); color: #ccc; }
+
+#llm-viz-toggle.viz-on {
+  border-color: rgba(100, 200, 255, 0.5);
+  color: #88ddff;
+  background: rgba(100, 200, 255, 0.1);
+}
+
+#llm-viz-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  backdrop-filter: blur(6px);
+}
+
+#llm-viz-overlay.hidden { display: none; }
+
+#llm-viz-panel {
+  background: #0d1117;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  width: 92%;
+  max-width: 580px;
+  max-height: 88vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7);
+}
+
+#llm-viz-panel::-webkit-scrollbar { width: 4px; }
+#llm-viz-panel::-webkit-scrollbar-track { background: transparent; }
+#llm-viz-panel::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+#llm-viz-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  position: sticky;
+  top: 0;
+  background: #0d1117;
+  z-index: 1;
+  border-radius: 20px 20px 0 0;
+}
+
+#llm-viz-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+#llm-viz-close {
+  background: transparent;
+  border: none;
+  color: #555;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 4px;
+  transition: color 0.15s;
+}
+
+#llm-viz-close:hover { color: #fff; }
+
+#llm-viz-body {
+  padding: 18px 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Step 공통 */
+.viz-step {
+  display: none;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.viz-step.viz-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.viz-step-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.viz-step-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.07);
+  color: #555;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.3s, color 0.3s;
+}
+
+.viz-step.viz-active .viz-step-badge {
+  background: #88ddff;
+  color: #000;
+}
+
+.viz-step-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #888;
+  letter-spacing: 0.03em;
+}
+
+.viz-step.viz-active .viz-step-title { color: #ccc; }
+
+.viz-step-body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Step 1: 입력 분석 */
+.viz-input-display {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #fff;
+  padding: 4px 0;
+  letter-spacing: 0.01em;
+}
+
+.viz-keywords-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-height: 28px;
+}
+
+.viz-keyword-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  opacity: 0;
+  transform: scale(0.75);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.viz-keyword-chip.chip-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.chip-word  { font-size: 0.88rem; font-weight: 700; }
+.chip-label { font-size: 0.62rem; opacity: 0.65; }
+
+.kw-fruit  { background: rgba(255,165,0,0.15); border: 1px solid rgba(255,165,0,0.35); color: #ffb733; }
+.kw-pos    { background: rgba(100,200,255,0.15); border: 1px solid rgba(100,200,255,0.35); color: #77ccff; }
+.kw-action { background: rgba(100,255,150,0.15); border: 1px solid rgba(100,255,150,0.35); color: #77ffaa; }
+.kw-qty    { background: rgba(255,100,100,0.15); border: 1px solid rgba(255,100,100,0.35); color: #ff8888; }
+
+/* Step 2: 프롬프트 구성 */
+.viz-prompt-block {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.viz-label {
+  font-size: 0.67rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  margin-top: 1px;
+  flex-shrink: 0;
+  letter-spacing: 0.02em;
+}
+
+.viz-label-system { background: rgba(180,100,255,0.15); color: #bb88ff; border: 1px solid rgba(180,100,255,0.3); }
+.viz-label-user   { background: rgba(100,200,255,0.15); color: #88ddff; border: 1px solid rgba(100,200,255,0.3); }
+
+.viz-code {
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.78rem;
+  color: #aaa;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Step 3: API */
+.viz-api-badge {
+  font-size: 0.68rem;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-left: auto;
+  transition: all 0.3s;
+}
+
+.viz-api-badge.sending {
+  background: rgba(255,200,50,0.12);
+  color: #ffcc44;
+  border: 1px solid rgba(255,200,50,0.3);
+  animation: viz-pulse 1s ease-in-out infinite;
+}
+
+.viz-api-badge.received {
+  background: rgba(100,255,150,0.12);
+  color: #66ee99;
+  border: 1px solid rgba(100,255,150,0.3);
+}
+
+.viz-api-badge.errored {
+  background: rgba(255,100,100,0.12);
+  color: #ff8888;
+  border: 1px solid rgba(255,100,100,0.3);
+}
+
+@keyframes viz-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.45; }
+}
+
+.viz-json-block {
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  font-size: 0.8rem;
+  color: #77ee99;
+  background: rgba(0,255,80,0.04);
+  border: 1px solid rgba(0,255,80,0.1);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 0;
+  min-height: 38px;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Step 4: 결과 */
+.viz-result-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 3px 0;
+}
+
+.viz-result-key {
+  font-size: 0.72rem;
+  color: #555;
+  min-width: 72px;
+}
+
+.viz-result-val {
+  font-size: 0.8rem;
+  font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+  color: #88ddff;
+}
+
+.viz-result-val.viz-action-ok   { color: #77ee99; }
+.viz-result-val.viz-action-none { color: #ff8888; }
+
+.viz-result-final {
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.viz-final-reject { color: #ff8888; }
+.viz-result-err   { color: #ff8888; font-size: 0.88rem; }
+
+/* 연결 화살표 */
+.viz-connector {
+  display: none;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.18);
+  font-size: 1rem;
+  padding: 5px 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.viz-connector.viz-visible { opacity: 1; }
 
 /* 반응형 / Responsive */
 @media (max-width: 480px) {

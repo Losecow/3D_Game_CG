@@ -267,12 +267,87 @@
 
     <!-- AI 명령 패널 -->
     <div id="llm-panel">
-      <div id="llm-header">🤖 AI 명령</div>
+      <div id="llm-header">
+        <span>🤖 AI 명령</span>
+        <button id="llm-viz-toggle" title="LLM 처리 과정 보기">🔬</button>
+      </div>
       <div id="llm-input-row">
         <input id="llm-input" type="text" placeholder="예) 수박 왼쪽에 떨어뜨려" maxlength="100" />
         <button id="llm-send-btn">전송</button>
       </div>
       <div id="llm-feedback"></div>
+    </div>
+
+    <!-- LLM 처리 과정 시각화 오버레이 -->
+    <div id="llm-viz-overlay" class="hidden">
+      <div id="llm-viz-panel">
+
+        <div id="llm-viz-header">
+          <span id="llm-viz-title">🧠 LLM 처리 과정</span>
+          <button id="llm-viz-close">×</button>
+        </div>
+
+        <div id="llm-viz-body">
+
+          <!-- Step 1: 입력 분석 -->
+          <div class="viz-step" id="viz-step-1">
+            <div class="viz-step-header">
+              <span class="viz-step-badge">1</span>
+              <span class="viz-step-title">입력 분석</span>
+            </div>
+            <div class="viz-step-body">
+              <div id="viz-input-raw" class="viz-input-display"></div>
+              <div id="viz-keywords" class="viz-keywords-row"></div>
+            </div>
+          </div>
+
+          <div class="viz-connector" id="viz-conn-1">▼</div>
+
+          <!-- Step 2: 프롬프트 구성 -->
+          <div class="viz-step" id="viz-step-2">
+            <div class="viz-step-header">
+              <span class="viz-step-badge">2</span>
+              <span class="viz-step-title">프롬프트 구성</span>
+            </div>
+            <div class="viz-step-body">
+              <div class="viz-prompt-block">
+                <span class="viz-label viz-label-system">시스템 지시</span>
+                <code id="viz-sys-text" class="viz-code"></code>
+              </div>
+              <div class="viz-prompt-block">
+                <span class="viz-label viz-label-user">사용자 입력</span>
+                <code id="viz-usr-text" class="viz-code"></code>
+              </div>
+            </div>
+          </div>
+
+          <div class="viz-connector" id="viz-conn-2">▼</div>
+
+          <!-- Step 3: Gemini API -->
+          <div class="viz-step" id="viz-step-3">
+            <div class="viz-step-header">
+              <span class="viz-step-badge">3</span>
+              <span class="viz-step-title">Gemini API 호출</span>
+              <span id="viz-api-badge" class="viz-api-badge"></span>
+            </div>
+            <div class="viz-step-body">
+              <pre id="viz-raw-response" class="viz-json-block"></pre>
+            </div>
+          </div>
+
+          <div class="viz-connector" id="viz-conn-3">▼</div>
+
+          <!-- Step 4: 해석 & 실행 -->
+          <div class="viz-step" id="viz-step-4">
+            <div class="viz-step-header">
+              <span class="viz-step-badge">4</span>
+              <span class="viz-step-title">해석 &amp; 실행</span>
+            </div>
+            <div id="viz-result" class="viz-step-body"></div>
+          </div>
+
+        </div>
+      </div>
     </div>
 
     <script type="module" src="./main.js"></script>

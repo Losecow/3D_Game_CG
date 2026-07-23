@@ -85,7 +85,9 @@ router.post('/command', async (req, res) => {
       return res.json({ action: 'none', reason: '유효하지 않은 액션입니다.' });
     }
 
-    res.json(parsed);
+    const result = { ...parsed };
+    if (req.query.debug === '1') result._raw = raw;
+    res.json(result);
   } catch (err) {
     console.error('[LLM] error:', err.message);
     res.status(500).json({ error: 'LLM 호출 실패', detail: err.message });
