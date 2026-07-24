@@ -105,6 +105,9 @@ llmInput.addEventListener('keydown', (e) => {
 // ── 모바일 드롭 FAB ──
 
 if (window.matchMedia('(pointer: coarse)').matches) {
+  // 모바일: 분할 뷰 자동 활성화
+  settings.handleSplitViewToggle();
+
   const mDropFab = document.getElementById('m-drop-fab');
 
   mDropFab.addEventListener('click', (e) => {

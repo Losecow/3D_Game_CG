@@ -1922,8 +1922,29 @@ body.split-active #splitview-btn {
   /* 조작 안내 숨김 */
   #controls-hint { display: none; }
 
-  /* 분할뷰 / 방향 레이블 숨김 */
+  /* 분할뷰 방향 레이블: 기본 숨김, split-active 시 표시 */
   .topdown-label { display: none !important; }
+  body.split-active .topdown-label:not(.hidden) { display: block !important; }
+
+  /* split-active 충돌 해소: HUD는 모바일 레이아웃 유지 */
+  body.split-active #hud-top {
+    right: 0 !important;
+    width: 100% !important;
+    display: flex !important;
+    grid-template-columns: none;
+  }
+
+  body.split-active #auth-panel {
+    position: static !important;
+    bottom: auto !important;
+    left: auto !important;
+  }
+
+  body.split-active #ui {
+    display: flex !important;
+  }
+
+  body.split-active .btn-group { display: none !important; }
 
   /* AI 패널 → 하단 풀 너비, 설정에서 표시/숨김 */
   #llm-panel {
